@@ -1247,6 +1247,58 @@ SK: C [w1 w2]ᵀ = c0
             };
         }
 
+        // Modelo de covariancia exponencial usado no exemplo numérico (Seção 6).
+        function covariance(h, sigma2, range) {
+            return sigma2 * Math.exp(-Math.abs(h) / range);
+        }
+
+        // Resolve Ax=b por eliminação de Gauss com pivoteamento parcial.
+        function gaussianSolve(AInput, bInput) {
+            const n = bInput.length;
+            const A = AInput.map((row) => row.slice());
+            const b = bInput.slice();
+            const EPS = 1e-12;
+
+            for (let k = 0; k < n; k += 1) {
+                let pivot = k;
+                let maxAbs = Math.abs(A[k][k]);
+                for (let i = k + 1; i < n; i += 1) {
+                    const val = Math.abs(A[i][k]);
+                    if (val > maxAbs) {
+                        maxAbs = val;
+                        pivot = i;
+                    }
+                }
+
+                if (maxAbs < EPS) {
+                    throw new Error('sistema singular ou mal condicionado');
+                }
+
+                if (pivot !== k) {
+                    [A[k], A[pivot]] = [A[pivot], A[k]];
+                    [b[k], b[pivot]] = [b[pivot], b[k]];
+                }
+
+                for (let i = k + 1; i < n; i += 1) {
+                    const f = A[i][k] / A[k][k];
+                    for (let j = k; j < n; j += 1) {
+                        A[i][j] -= f * A[k][j];
+                    }
+                    b[i] -= f * b[k];
+                }
+            }
+
+            const x = new Array(n).fill(0);
+            for (let i = n - 1; i >= 0; i -= 1) {
+                let sum = b[i];
+                for (let j = i + 1; j < n; j += 1) {
+                    sum -= A[i][j] * x[j];
+                }
+                x[i] = sum / A[i][i];
+            }
+            return x;
+        }
+
         const cStar = skCenter.lam1 + skCenter.lam2;
         const kOptimal = 1.3; // Consistente com calcError no ótimo restrito
         

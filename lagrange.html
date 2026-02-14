@@ -1160,17 +1160,19 @@
             vline4.setAttribute('x2', xRight);
             vline4.setAttribute('y2', yRight);
 
-            // Tangente: inclinação em coordenadas SVG
-            const slopeSVG = -dSigDc * 400 / 240;
+            // Tangente no painel direito (curva de perfil sigma2*(c)):
+            // y_screen = 280 - 400 * sigma2*(c), x_screen = 450 + 240 * c
+            // => dy/dx (screen) = -(400/240) * d(sigma2*)/dc
+            const slopeScreen = -(400 / 240) * dSigDc;
             const tangLen = 60;
             tangent4.setAttribute('x1', xRight - tangLen);
-            tangent4.setAttribute('y1', yRight - slopeSVG * (-tangLen));
+            tangent4.setAttribute('y1', yRight + slopeScreen * (-tangLen));
             tangent4.setAttribute('x2', xRight + tangLen);
-            tangent4.setAttribute('y2', yRight - slopeSVG * tangLen);
+            tangent4.setAttribute('y2', yRight + slopeScreen * tangLen);
 
             // Decomposição da direção tangente (verde = laranja + magenta)
             const compDx = 38;
-            const compDy = -slopeSVG * compDx;
+            const compDy = slopeScreen * compDx;
             const compEndX = xRight + compDx;
             const compEndY = yRight + compDy;
 

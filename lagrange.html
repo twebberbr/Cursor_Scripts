@@ -262,6 +262,44 @@
             color: #ffcc80;
         }
 
+        .mini-btn {
+            width: auto;
+            margin-top: 0;
+            padding: 0.42rem 0.75rem;
+            font-size: 0.82rem;
+            border-radius: 7px;
+            font-weight: 600;
+        }
+
+        .guide-panel {
+            margin-top: 0.4rem;
+            border: 1px solid rgba(129, 212, 250, 0.35);
+            background: rgba(0, 0, 0, 0.26);
+            border-radius: 8px;
+            padding: 0.55rem 0.7rem;
+        }
+
+        .guide-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.76rem;
+            color: #81d4fa;
+            margin-bottom: 0.35rem;
+        }
+
+        .guide-text {
+            color: #d8e5f7;
+            font-size: 0.9rem;
+            margin: 0.2rem 0 0;
+        }
+
+        .example-scene {
+            margin-top: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            background: rgba(0,0,0,0.24);
+            padding: 0.55rem;
+        }
+
         .example-grid {
             display: grid;
             grid-template-columns: 1.05fr 1fr;
@@ -673,6 +711,14 @@
                 </div>
                 <div class="status-box" id="status4">c = 1.00 | carregando...</div>
             </div>
+            <div class="controls" style="gap:0.7rem;">
+                <button class="mini-btn" id="guidePrev4">Passo anterior</button>
+                <button class="mini-btn" id="guideNext4">Próximo passo</button>
+                <div class="guide-panel" style="flex:1; min-width: 320px;">
+                    <div class="guide-title" id="guideStep4">Guia 4/1</div>
+                    <p class="guide-text" id="guideText4">Use os botões para uma explicação guiada da Figura 4.</p>
+                </div>
+            </div>
 
             <!-- Figura combinada: duas vistas lado a lado -->
             <div class="figure-box large" style="padding: 1.5rem;">
@@ -1074,6 +1120,36 @@ c0 = [...]
 OK: [C 1; 1ᵀ 0] [w1 w2 μ]ᵀ = [c0 1]ᵀ
 SK: C [w1 w2]ᵀ = c0
 </pre>
+                    <div class="example-scene">
+                        <div class="guide-title">Cena 2D do exemplo (x,z)</div>
+                        <svg id="exGrid2d" viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0" y="0" width="620" height="300" fill="#0a0a15" rx="6"/>
+                            <g id="exGridLines"></g>
+                            <line x1="60" y1="250" x2="585" y2="250" stroke="#9aa7bd" stroke-width="1.2"/>
+                            <line x1="60" y1="260" x2="60" y2="20" stroke="#9aa7bd" stroke-width="1.2"/>
+                            <text x="572" y="270" font-family="JetBrains Mono" font-size="11" fill="#9aa7bd">x</text>
+                            <text x="42" y="24" font-family="JetBrains Mono" font-size="11" fill="#9aa7bd">z</text>
+                            <g id="exGridTicks"></g>
+
+                            <line id="exX0Line" x1="300" y1="250" x2="300" y2="30" stroke="#ffd54f" stroke-width="1.6" stroke-dasharray="6,4"/>
+                            <text id="exX0Label" x="306" y="40" font-family="JetBrains Mono" font-size="10" fill="#fff59d">x0</text>
+
+                            <circle id="exPt1" cx="120" cy="210" r="6.5" fill="#ff9800" stroke="#fff" stroke-width="1.2"/>
+                            <text id="exPt1Label" x="130" y="206" font-family="JetBrains Mono" font-size="10" fill="#ffb74d">A1</text>
+
+                            <circle id="exPt2" cx="500" cy="150" r="6.5" fill="#ab47bc" stroke="#fff" stroke-width="1.2"/>
+                            <text id="exPt2Label" x="510" y="146" font-family="JetBrains Mono" font-size="10" fill="#ce93d8">A2</text>
+
+                            <polygon id="exPtOk" points="300,180 307,187 300,194 293,187" fill="#66bb6a" stroke="#fff" stroke-width="1.2"/>
+                            <text id="exPtOkLabel" x="312" y="186" font-family="JetBrains Mono" font-size="10" fill="#a5d6a7">OK z*</text>
+
+                            <rect id="exPtSk" x="294" y="198" width="12" height="12" fill="#42a5f5" stroke="#fff" stroke-width="1.2"/>
+                            <text id="exPtSkLabel" x="312" y="209" font-family="JetBrains Mono" font-size="10" fill="#90caf9">SK z*</text>
+
+                            <line id="exGapLine" x1="300" y1="187" x2="300" y2="204" stroke="#ff4dd2" stroke-width="1.8"/>
+                            <text id="exGapLabel" x="307" y="198" font-family="JetBrains Mono" font-size="10" fill="#ff77dd">Δz</text>
+                        </svg>
+                    </div>
                 </div>
                 <div>
                     <table class="result-table">
@@ -1405,6 +1481,10 @@ SK: C [w1 w2]ᵀ = c0
         const layerGrad4 = document.getElementById('layerGrad4');
         const layerDelta4 = document.getElementById('layerDelta4');
         const layerGeo4 = document.getElementById('layerGeo4');
+        const guidePrev4 = document.getElementById('guidePrev4');
+        const guideNext4 = document.getElementById('guideNext4');
+        const guideStep4 = document.getElementById('guideStep4');
+        const guideText4 = document.getElementById('guideText4');
 
         // Grupos de camada
         const layerGradLeft4 = document.getElementById('layerGradLeft4');
@@ -1614,12 +1694,57 @@ SK: C [w1 w2]ᵀ = c0
             status4.textContent = `c = ${c.toFixed(2)} | sigma2* = ${sig.toFixed(3)} | dsigma2*/dc = ${dSigDc.toFixed(2)} | mu = ${mu.toFixed(2)}`;
         }
 
+        const guidedSteps4 = [
+            {
+                c: 1.0, grad: true, delta: false, geo: false,
+                title: 'Guia 4/1 - Gradientes no espaço λ',
+                text: 'Aqui foque só nos gradientes. Na esquerda, ∇f e ∇g descrevem direção de variação local no espaço dos pesos.'
+            },
+            {
+                c: 1.18, grad: false, delta: true, geo: false,
+                title: 'Guia 4/2 - Deltas finitos',
+                text: 'Agora apenas deltas: Δλ no painel esquerdo e Δc/Δσ²* no direito, sempre medidos em relação ao ponto de referência c=1.0.'
+            },
+            {
+                c: 1.18, grad: true, delta: true, geo: false,
+                title: 'Guia 4/3 - Gradiente vs Delta',
+                text: 'Compare: gradiente é taxa local (instantânea), delta é variação finita entre dois pontos. Não são exatamente a mesma coisa.'
+            },
+            {
+                c: 0.92, grad: true, delta: false, geo: true,
+                title: 'Guia 4/4 - Geometria da curva de corte',
+                text: 'No painel direito: verde mostra direção tangente da curva σ²*(c). Ciano é normal 2D da curva (não da superfície 3D).'
+            },
+            {
+                c: 1.0, grad: true, delta: true, geo: true,
+                title: 'Guia 4/5 - Síntese completa',
+                text: 'Tudo ligado: o sinal de μ acompanha -dσ²*/dc. Use esse estado para conectar com o exemplo numérico da Seção 6.'
+            }
+        ];
+        let guidedIndex4 = 0;
+
+        function applyGuidedStep4(index) {
+            if (!guidedSteps4.length) return;
+            guidedIndex4 = (index + guidedSteps4.length) % guidedSteps4.length;
+            const step = guidedSteps4[guidedIndex4];
+            slider4.value = String(Math.round(step.c * 100));
+            layerGrad4.checked = step.grad;
+            layerDelta4.checked = step.delta;
+            layerGeo4.checked = step.geo;
+            guideStep4.textContent = step.title;
+            guideText4.textContent = step.text;
+            applyLayerVisibility4();
+            updateSection4();
+        }
+
         slider4.addEventListener('input', updateSection4);
         [layerGrad4, layerDelta4, layerGeo4].forEach((cb) => {
             cb.addEventListener('change', applyLayerVisibility4);
         });
+        guidePrev4.addEventListener('click', () => applyGuidedStep4(guidedIndex4 - 1));
+        guideNext4.addEventListener('click', () => applyGuidedStep4(guidedIndex4 + 1));
         applyLayerVisibility4();
-        updateSection4();
+        applyGuidedStep4(0);
 
         // ============================================
         // SEÇÃO 5 - SÍNTESE (FIG. 2 + FIG. 4)
@@ -1885,6 +2010,20 @@ SK: C [w1 w2]ᵀ = c0
         const exampleMatrices = document.getElementById('exampleMatrices');
         const exampleLinkText = document.getElementById('exampleLinkText');
         const applySkToFiguresBtn = document.getElementById('applySkToFigures');
+        const exGridLines = document.getElementById('exGridLines');
+        const exGridTicks = document.getElementById('exGridTicks');
+        const exX0Line = document.getElementById('exX0Line');
+        const exX0Label = document.getElementById('exX0Label');
+        const exPt1 = document.getElementById('exPt1');
+        const exPt2 = document.getElementById('exPt2');
+        const exPt1Label = document.getElementById('exPt1Label');
+        const exPt2Label = document.getElementById('exPt2Label');
+        const exPtOk = document.getElementById('exPtOk');
+        const exPtOkLabel = document.getElementById('exPtOkLabel');
+        const exPtSk = document.getElementById('exPtSk');
+        const exPtSkLabel = document.getElementById('exPtSkLabel');
+        const exGapLine = document.getElementById('exGapLine');
+        const exGapLabel = document.getElementById('exGapLabel');
 
         const outSkW1 = document.getElementById('skW1');
         const outSkW2 = document.getElementById('skW2');
@@ -1938,9 +2077,15 @@ SK: C [w1 w2]ᵀ = c0
             const v = readExampleValues();
             updateExampleDisplays(v);
 
-            if (Math.abs(v.x1 - v.x2) < 1e-6) {
+            const clearExampleOutputs = () => {
+                [outSkW1, outSkW2, outSkSum, outSkEst, outSkVar, outOkW1, outOkW2, outOkSum, outOkEst, outOkVar, outOkMu]
+                    .forEach((el) => { el.textContent = '—'; });
+            };
+
+            if (Math.abs(v.x1 - v.x2) < 0.15) {
                 exStatus.className = 'status-box status-suboptimal';
-                exStatus.textContent = 'x1 e x2 nao podem coincidir (matriz singular).';
+                exStatus.textContent = 'x1 e x2 estao muito proximos. Afaste as amostras para evitar instabilidade numerica.';
+                clearExampleOutputs();
                 return;
             }
 
@@ -1976,6 +2121,91 @@ SK: C [w1 w2]ᵀ = c0
                 const sumOk = wOk[0] + wOk[1];
                 const zOk = wOk[0] * v.z1 + wOk[1] * v.z2;
                 const varOk = v.sigma2 - (wOk[0] * c01 + wOk[1] * c02) - muOk;
+
+                // Cena 2D (x,z): posiciona amostras e estimativas no alvo
+                const minX = Math.min(v.x1, v.x2, v.x0) - 1.2;
+                const maxX = Math.max(v.x1, v.x2, v.x0) + 1.2;
+                const minZ = Math.min(v.z1, v.z2, zSk, zOk, v.mean) - 2.5;
+                const maxZ = Math.max(v.z1, v.z2, zSk, zOk, v.mean) + 2.5;
+                const x0 = 60;
+                const y0 = 250;
+                const w = 525;
+                const h = 230;
+                const sx = w / Math.max(1e-6, (maxX - minX));
+                const sy = h / Math.max(1e-6, (maxZ - minZ));
+                const px = (x) => x0 + (x - minX) * sx;
+                const py = (z) => y0 - (z - minZ) * sy;
+
+                // grade/ticks
+                let gridHtml = '';
+                for (let i = 0; i <= 6; i += 1) {
+                    const gx = x0 + (i / 6) * w;
+                    gridHtml += `<line x1="${gx}" y1="${y0}" x2="${gx}" y2="${y0-h}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+                }
+                for (let i = 0; i <= 5; i += 1) {
+                    const gy = y0 - (i / 5) * h;
+                    gridHtml += `<line x1="${x0}" y1="${gy}" x2="${x0+w}" y2="${gy}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+                }
+                exGridLines.innerHTML = gridHtml;
+
+                let tickHtml = '';
+                for (let i = 0; i <= 6; i += 1) {
+                    const tx = minX + (i / 6) * (maxX - minX);
+                    const pxTick = x0 + (i / 6) * w;
+                    tickHtml += `<text x="${pxTick - 8}" y="${y0 + 16}" font-family="JetBrains Mono" font-size="10" fill="#8fa1bb">${tx.toFixed(1)}</text>`;
+                }
+                for (let i = 0; i <= 5; i += 1) {
+                    const tz = minZ + (i / 5) * (maxZ - minZ);
+                    const pyTick = y0 - (i / 5) * h;
+                    tickHtml += `<text x="${x0 - 42}" y="${pyTick + 4}" font-family="JetBrains Mono" font-size="10" fill="#8fa1bb">${tz.toFixed(1)}</text>`;
+                }
+                exGridTicks.innerHTML = tickHtml;
+
+                const p1x = px(v.x1);
+                const p1y = py(v.z1);
+                const p2x = px(v.x2);
+                const p2y = py(v.z2);
+                const p0x = px(v.x0);
+                const pOkY = py(zOk);
+                const pSkY = py(zSk);
+
+                exX0Line.setAttribute('x1', p0x);
+                exX0Line.setAttribute('x2', p0x);
+                exX0Line.setAttribute('y1', y0);
+                exX0Line.setAttribute('y2', y0 - h);
+                exX0Label.setAttribute('x', p0x + 5);
+
+                exPt1.setAttribute('cx', p1x);
+                exPt1.setAttribute('cy', p1y);
+                exPt1Label.setAttribute('x', p1x + 8);
+                exPt1Label.setAttribute('y', p1y - 6);
+                exPt1Label.textContent = `A1 (${v.x1.toFixed(1)}, ${v.z1.toFixed(1)})`;
+
+                exPt2.setAttribute('cx', p2x);
+                exPt2.setAttribute('cy', p2y);
+                exPt2Label.setAttribute('x', p2x + 8);
+                exPt2Label.setAttribute('y', p2y - 6);
+                exPt2Label.textContent = `A2 (${v.x2.toFixed(1)}, ${v.z2.toFixed(1)})`;
+
+                const okPoly = `${p0x},${pOkY-7} ${p0x+7},${pOkY} ${p0x},${pOkY+7} ${p0x-7},${pOkY}`;
+                exPtOk.setAttribute('points', okPoly);
+                exPtOkLabel.setAttribute('x', p0x + 12);
+                exPtOkLabel.setAttribute('y', pOkY - 2);
+                exPtOkLabel.textContent = `OK z*=${zOk.toFixed(2)}`;
+
+                exPtSk.setAttribute('x', p0x - 6);
+                exPtSk.setAttribute('y', pSkY - 6);
+                exPtSkLabel.setAttribute('x', p0x + 12);
+                exPtSkLabel.setAttribute('y', pSkY + 4);
+                exPtSkLabel.textContent = `SK z*=${zSk.toFixed(2)}`;
+
+                exGapLine.setAttribute('x1', p0x);
+                exGapLine.setAttribute('x2', p0x);
+                exGapLine.setAttribute('y1', pOkY);
+                exGapLine.setAttribute('y2', pSkY);
+                exGapLabel.setAttribute('x', p0x + 8);
+                exGapLabel.setAttribute('y', (pOkY + pSkY) * 0.5 + 4);
+                exGapLabel.textContent = `Δz=${(zOk - zSk).toFixed(2)}`;
 
                 outSkW1.textContent = nfmt(wSk[0], 5);
                 outSkW2.textContent = nfmt(wSk[1], 5);
@@ -2014,6 +2244,7 @@ SK: C [w1 w2]ᵀ = c0
             } catch (err) {
                 exStatus.className = 'status-box status-suboptimal';
                 exStatus.textContent = `Falha numerica: ${err.message}`;
+                clearExampleOutputs();
             }
         }
 

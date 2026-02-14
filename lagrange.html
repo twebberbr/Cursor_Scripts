@@ -192,6 +192,31 @@
             border-radius: 8px;
         }
 
+        .layer-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            align-items: center;
+        }
+
+        .layer-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: #cfe9ff;
+            padding: 0.28rem 0.56rem;
+            border: 1px solid rgba(129, 212, 250, 0.4);
+            border-radius: 999px;
+            background: rgba(13, 26, 46, 0.45);
+            white-space: nowrap;
+        }
+
+        .layer-toggle input {
+            accent-color: #4fc3f7;
+        }
+
         .slider-group {
             display: flex;
             align-items: center;
@@ -237,8 +262,55 @@
             color: #ffcc80;
         }
 
+        .example-grid {
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            gap: 1rem;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            background: rgba(0, 0, 0, 0.24);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .result-table th,
+        .result-table td {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.45rem 0.42rem;
+            text-align: right;
+        }
+
+        .result-table th:first-child,
+        .result-table td:first-child {
+            text-align: left;
+            color: #bfe7ff;
+            white-space: nowrap;
+        }
+
+        .result-table thead th {
+            color: #fff59d;
+            background: rgba(255, 213, 79, 0.12);
+        }
+
+        .example-matrix {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            white-space: pre-wrap;
+            line-height: 1.45;
+            color: #dcefff;
+            margin: 0;
+        }
+
         @media (max-width: 800px) {
             .figure-row, .figure-row.reversed {
+                grid-template-columns: 1fr;
+            }
+            .example-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -594,13 +666,18 @@
                     <input type="range" id="slider4" min="50" max="130" value="100">
                     <span class="value-display" id="val4">1.00</span>
                 </div>
+                <div class="layer-controls">
+                    <label class="layer-toggle"><input type="checkbox" id="layerGrad4" checked>gradientes</label>
+                    <label class="layer-toggle"><input type="checkbox" id="layerDelta4" checked>deltas</label>
+                    <label class="layer-toggle"><input type="checkbox" id="layerGeo4" checked>tangente/normal</label>
+                </div>
                 <div class="status-box" id="status4">c = 1.00 | carregando...</div>
             </div>
 
             <!-- Figura combinada: duas vistas lado a lado -->
             <div class="figure-box large" style="padding: 1.5rem;">
                 <div class="figure-label">Figura 4: Duas Visões do Mesmo Problema</div>
-                <svg id="fig4combined" viewBox="0 0 750 340" xmlns="http://www.w3.org/2000/svg">
+                <svg id="fig4combined" viewBox="0 0 750 420" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <marker id="arrowAxis4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
                             <polygon points="0 0, 8 3, 0 6" fill="#a0a0a0"/>
@@ -622,19 +699,15 @@
                         </marker>
                     </defs>
 
-                    <!-- ========== PAINEL ESQUERDO: Vista de Cima (espaço λ₁, λ₂) ========== -->
-                    <rect x="10" y="10" width="320" height="320" fill="#0a0a15" rx="6"/>
-                    
-                    <!-- Título -->
+                    <!-- Painel esquerdo -->
+                    <rect x="10" y="10" width="330" height="400" fill="#0a0a15" rx="6"/>
                     <text x="90" y="35" font-family="Crimson Pro" font-size="14" fill="#81d4fa" font-weight="600">Vista de Cima: Espaço (λ₁, λ₂)</text>
 
-                    <!-- Eixos -->
                     <line x1="50" y1="290" x2="310" y2="290" stroke="#a0a0a0" stroke-width="1" marker-end="url(#arrowAxis4)"/>
                     <line x1="50" y1="290" x2="50" y2="50" stroke="#a0a0a0" stroke-width="1" marker-end="url(#arrowAxis4)"/>
-                    <text x="300" y="308" font-family="Crimson Pro" font-size="13" fill="#a0a0a0" font-style="italic">λ₁</text>
+                    <text x="300" y="312" font-family="Crimson Pro" font-size="13" fill="#a0a0a0" font-style="italic">λ₁</text>
                     <text x="35" y="55" font-family="Crimson Pro" font-size="13" fill="#a0a0a0" font-style="italic">λ₂</text>
 
-                    <!-- Curvas de nível do erro (centro em SK) -->
                     <g fill="none" stroke-width="1.2" transform="translate(50, 290)">
                         <ellipse cx="54" cy="-81" rx="18" ry="11" transform="rotate(-45 54 -81)" stroke="#1565c0" opacity="0.5"/>
                         <ellipse cx="54" cy="-81" rx="36" ry="22" transform="rotate(-45 54 -81)" stroke="#1976d2" opacity="0.4"/>
@@ -642,65 +715,59 @@
                         <ellipse cx="54" cy="-81" rx="85" ry="51" transform="rotate(-45 54 -81)" stroke="#42a5f5" opacity="0.3"/>
                     </g>
 
-                    <!-- Centro SK -->
                     <circle cx="104" cy="209" r="6" fill="#2196f3" stroke="#fff" stroke-width="1.5"/>
                     <text x="75" y="235" font-family="JetBrains Mono" font-size="9" fill="#64b5f6">SK</text>
 
-                    <!-- Família de restrições (linhas paralelas c = constante) -->
-                    <!-- c = 0.5: λ₁+λ₂=0.5 → (0,0.5) a (0.5,0) → SVG: (50,200) a (140,290) -->
                     <line x1="50" y1="200" x2="140" y2="290" stroke="rgba(239,83,80,0.2)" stroke-width="1"/>
-                    <text x="55" y="195" font-family="JetBrains Mono" font-size="9" fill="rgba(239,83,80,0.4)">c=0.5</text>
-                    
-                    <!-- c = 0.75: (0,0.75) a (0.75,0) → SVG: (50,155) a (185,290) -->
                     <line x1="50" y1="155" x2="185" y2="290" stroke="rgba(239,83,80,0.3)" stroke-width="1.5"/>
-                    <text x="55" y="150" font-family="JetBrains Mono" font-size="9" fill="rgba(239,83,80,0.5)">c=0.75</text>
-                    
-                    <!-- c = 1.0: (0,1) a (1,0) → SVG: (50,110) a (230,290) - PRINCIPAL -->
                     <line id="constraint100" x1="50" y1="110" x2="230" y2="290" stroke="#ef5350" stroke-width="2.5"/>
-                    <text x="55" y="105" font-family="JetBrains Mono" font-size="10" fill="#ef5350">c=1.0</text>
-                    
-                    <!-- c = 1.25: (0,1.25) a (1.25,0) → SVG: (50,65) a (275,290) -->
                     <line x1="50" y1="65" x2="275" y2="290" stroke="rgba(239,83,80,0.3)" stroke-width="1.5"/>
+                    <text x="55" y="195" font-family="JetBrains Mono" font-size="9" fill="rgba(239,83,80,0.4)">c=0.5</text>
+                    <text x="55" y="150" font-family="JetBrains Mono" font-size="9" fill="rgba(239,83,80,0.5)">c=0.75</text>
+                    <text x="55" y="105" font-family="JetBrains Mono" font-size="10" fill="#ef5350">c=1.0</text>
                     <text x="55" y="60" font-family="JetBrains Mono" font-size="9" fill="rgba(239,83,80,0.5)">c=1.25</text>
 
-                    <!-- Ponto ótimo na restrição atual -->
                     <circle id="point4left" cx="140" cy="200" r="9" fill="#ff5722" stroke="#fff" stroke-width="2"/>
 
-                    <!-- Gradiente ∇f (laranja) -->
-                    <line id="gradF4" x1="140" y1="200" x2="190" y2="150" stroke="#ff9800" stroke-width="2" marker-end="url(#arrowOrange4)"/>
-                    <text id="labelF4" x="195" y="148" font-family="Crimson Pro" font-size="13" fill="#ff9800" font-weight="600">∇f</text>
-
-                    <!-- Gradiente ∇g (roxo) - sempre perpendicular às restrições -->
-                    <line id="gradG4" x1="140" y1="200" x2="175" y2="165" stroke="#ab47bc" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowPurple4)"/>
-                    <text id="labelG4" x="178" y="162" font-family="Crimson Pro" font-size="13" fill="#ab47bc" font-weight="600">∇g</text>
-
-                    <!-- Legenda esquerda -->
-                    <g font-family="Crimson Pro" font-size="10">
-                        <rect x="200" y="45" width="120" height="55" rx="4" fill="rgba(0,0,0,0.5)" stroke="rgba(255,255,255,0.2)"/>
-                        <text x="210" y="62" fill="#ffb74d">∇f aponta para ↑ erro</text>
-                        <text x="210" y="78" fill="#ce93d8">∇g ⊥ às restrições</text>
-                        <text x="210" y="94" fill="#ef9a9a">Linhas = c constante</text>
+                    <g id="layerGradLeft4">
+                        <line id="gradF4" x1="140" y1="200" x2="190" y2="150" stroke="#ff9800" stroke-width="2" marker-end="url(#arrowOrange4)"/>
+                        <text id="labelF4" x="195" y="148" font-family="Crimson Pro" font-size="13" fill="#ff9800" font-weight="600">∇f</text>
+                        <line id="gradG4" x1="140" y1="200" x2="175" y2="165" stroke="#ab47bc" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowPurple4)"/>
+                        <text id="labelG4" x="178" y="162" font-family="Crimson Pro" font-size="13" fill="#ab47bc" font-weight="600">∇g</text>
                     </g>
 
-                    <!-- ========== SETA DE CONEXÃO ========== -->
-                    <line x1="340" y1="170" x2="380" y2="170" stroke="#ffd54f" stroke-width="2"/>
-                    <polygon points="390,170 375,162 375,178" fill="#ffd54f"/>
-                    <text x="345" y="155" font-family="Crimson Pro" font-size="11" fill="#ffd54f">projetar</text>
-                    <text x="350" y="190" font-family="Crimson Pro" font-size="11" fill="#ffd54f">em c</text>
+                    <g id="layerDeltaLeft4">
+                        <circle id="refPoint4left" cx="140" cy="200" r="5.5" fill="#ffffff" opacity="0.9"/>
+                        <text id="refLabel4" x="151" y="309" font-family="JetBrains Mono" font-size="9" fill="#ddd">ref c=1.0</text>
+                        <line id="deltaLam14" x1="140" y1="200" x2="160" y2="200" stroke="#ff9800" stroke-width="2.1" marker-end="url(#arrowOrange4)"/>
+                        <line id="deltaLam24" x1="160" y1="200" x2="160" y2="180" stroke="#ff4dd2" stroke-width="2.1" marker-end="url(#arrowMagenta4)"/>
+                        <text id="labelDeltaLam14" x="144" y="216" font-family="JetBrains Mono" font-size="10" fill="#ffb74d">Δλ₁</text>
+                        <text id="labelDeltaLam24" x="165" y="192" font-family="JetBrains Mono" font-size="10" fill="#ff77dd">Δλ₂</text>
+                    </g>
 
-                    <!-- ========== PAINEL DIREITO: Curva σ²*(c) ========== -->
-                    <rect x="410" y="10" width="330" height="320" fill="#0a0a15" rx="6"/>
-                    
-                    <!-- Título -->
+                    <g font-family="Crimson Pro" font-size="10">
+                        <rect x="24" y="315" width="302" height="84" rx="4" fill="rgba(0,0,0,0.45)" stroke="rgba(255,255,255,0.2)"/>
+                        <text x="32" y="335" fill="#ffb74d">gradientes (esquerda): ∇f e ∇g</text>
+                        <text x="32" y="351" fill="#ff77dd">deltas (esquerda): Δλ₁ e Δλ₂ (vs c = 1.0)</text>
+                        <text x="32" y="367" fill="#a5d6a7">gradiente no corte (direita): dσ²*/dc (direção tangente)</text>
+                        <text x="32" y="383" fill="#ff77dd">deltas no corte (direita): Δc e Δσ²* (vs c = 1.0)</text>
+                    </g>
+
+                    <!-- Conector -->
+                    <line x1="340" y1="190" x2="380" y2="190" stroke="#ffd54f" stroke-width="2"/>
+                    <polygon points="390,190 375,182 375,198" fill="#ffd54f"/>
+                    <text x="345" y="173" font-family="Crimson Pro" font-size="11" fill="#ffd54f">projetar</text>
+                    <text x="350" y="208" font-family="Crimson Pro" font-size="11" fill="#ffd54f">em c</text>
+
+                    <!-- Painel direito -->
+                    <rect x="410" y="10" width="330" height="400" fill="#0a0a15" rx="6"/>
                     <text x="470" y="35" font-family="Crimson Pro" font-size="14" fill="#81d4fa" font-weight="600">Vista Lateral: Curva σ²*(c)</text>
 
-                    <!-- Eixos -->
                     <line x1="450" y1="280" x2="710" y2="280" stroke="#a0a0a0" stroke-width="1" marker-end="url(#arrowAxis4)"/>
                     <line x1="450" y1="290" x2="450" y2="50" stroke="#a0a0a0" stroke-width="1" marker-end="url(#arrowAxis4)"/>
                     <text x="680" y="300" font-family="Crimson Pro" font-size="13" fill="#a0a0a0">c</text>
                     <text x="425" y="55" font-family="Crimson Pro" font-size="13" fill="#a0a0a0" font-style="italic">σ²*</text>
 
-                    <!-- Marcações eixo X -->
                     <g font-family="JetBrains Mono" font-size="10" fill="#888">
                         <text x="478" y="296">0.5</text>
                         <text x="528" y="296">0.75</text>
@@ -708,53 +775,46 @@
                         <text x="628" y="296">1.25</text>
                     </g>
 
-                    <!-- Curva σ²*(c) -->
                     <path id="curve4" fill="none" stroke="#42a5f5" stroke-width="3" stroke-linecap="round"/>
-
-                    <!-- Linhas verticais tracejadas conectando as restrições -->
                     <line x1="490" y1="280" x2="490" y2="60" stroke="rgba(239,83,80,0.15)" stroke-width="1" stroke-dasharray="3,3"/>
                     <line x1="540" y1="280" x2="540" y2="60" stroke="rgba(239,83,80,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
                     <line x1="590" y1="280" x2="590" y2="60" stroke="rgba(239,83,80,0.4)" stroke-width="1" stroke-dasharray="3,3"/>
                     <line x1="640" y1="280" x2="640" y2="60" stroke="rgba(239,83,80,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
 
-                    <!-- Mínimo SK -->
                     <circle id="minSK4" cx="540" cy="280" r="7" fill="#2196f3" stroke="#fff" stroke-width="1.5"/>
-                    <text x="520" y="310" font-family="JetBrains Mono" font-size="9" fill="#64b5f6">SK (c≈0.75)</text>
-
-                    <!-- Tangente da curva sigma2*(c) -->
-                    <line id="tangent4" x1="500" y1="250" x2="680" y2="180" stroke="rgba(102,187,106,0.45)" stroke-width="1.6" stroke-dasharray="6,5"/>
-
-                    <!-- Ponto na curva (correspondente ao ponto esquerdo) -->
+                    <text x="520" y="318" font-family="JetBrains Mono" font-size="9" fill="#64b5f6">SK (c≈0.75)</text>
                     <circle id="point4right" cx="590" cy="220" r="9" fill="#ff5722" stroke="#fff" stroke-width="2"/>
+                    <line id="vline4" x1="590" y1="280" x2="590" y2="220" stroke="#ff5722" stroke-width="1.4" stroke-dasharray="5,3"/>
 
-                    <!-- Vetores locais no corte (todos saem do ponto laranja) -->
-                    <line id="tanVec4" x1="590" y1="220" x2="628" y2="195" stroke="#66bb6a" stroke-width="3" marker-end="url(#arrowGreen4)"/>
-                    <line id="compCVec4" x1="590" y1="220" x2="628" y2="220" stroke="#ff9800" stroke-width="2.4" marker-end="url(#arrowOrange4)"/>
-                    <line id="compSigVec4" x1="628" y1="220" x2="628" y2="195" stroke="#ff4dd2" stroke-width="2.4" marker-end="url(#arrowMagenta4)"/>
-                    <line id="normalVec4" x1="590" y1="220" x2="572" y2="190" stroke="#4dd0e1" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrowCyan4)"/>
-                    <text id="labelTanVec4" x="634" y="192" font-family="Crimson Pro" font-size="11" fill="#a5d6a7">t (tangente)</text>
-                    <text id="labelCompCVec4" x="596" y="236" font-family="JetBrains Mono" font-size="10" fill="#ffb74d">Δc (horizontal)</text>
-                    <text id="labelCompSigVec4" x="632" y="208" font-family="JetBrains Mono" font-size="10" fill="#ff77dd">Δσ² (vertical)</text>
-                    <text id="labelNormalVec4" x="548" y="186" font-family="JetBrains Mono" font-size="10" fill="#80deea">n (normal 2D)</text>
-
-                    <!-- Linha vertical do ponto ao eixo -->
-                    <line id="vline4" x1="590" y1="280" x2="590" y2="220" stroke="#ff5722" stroke-width="1.5" stroke-dasharray="5,3"/>
-
-                    <!-- Caixa μ -->
-                    <rect x="656" y="70" width="76" height="70" rx="6" fill="rgba(255,213,79,0.15)" stroke="#ffd54f" stroke-width="1.5"/>
-                    <text x="659" y="95" font-family="Crimson Pro" font-size="13" fill="#fff59d" font-style="italic">μ = -dσ²*/dc</text>
-                    <text id="muResult4" x="675" y="125" font-family="JetBrains Mono" font-size="16" fill="#fff" font-weight="bold">≈ 0.40</text>
-
-                    <!-- Legenda vetorial -->
-                    <g font-family="Crimson Pro" font-size="10">
-                        <rect x="638" y="150" width="96" height="108" rx="4" fill="rgba(0,0,0,0.48)" stroke="rgba(255,255,255,0.22)"/>
-                        <text x="644" y="168" fill="#a5d6a7">verde: t tangente</text>
-                        <text x="644" y="184" fill="#ffb74d">laranja: Δc horiz.</text>
-                        <text x="644" y="200" fill="#ff77dd">magenta: Δσ² vert.</text>
-                        <text x="644" y="216" fill="#80deea">ciano: normal 2D</text>
-                        <text x="644" y="232" fill="#fff59d">μ = -Δσ²/Δc</text>
-                        <text x="644" y="248" fill="#b0bec5">Δσ² vert. ≠ normal 3D</text>
+                    <g id="layerGradRight4">
+                        <line id="tanVec4" x1="590" y1="220" x2="628" y2="195" stroke="#66bb6a" stroke-width="3" marker-end="url(#arrowGreen4)"/>
+                        <text id="labelTanVec4" x="634" y="192" font-family="JetBrains Mono" font-size="10" fill="#a5d6a7">grad_c ~ dσ²*/dc</text>
                     </g>
+
+                    <g id="layerDeltaRight4">
+                        <circle id="refPoint4right" cx="590" cy="220" r="5.5" fill="#ffffff" opacity="0.9"/>
+                        <text id="refPointLabel4" x="602" y="270" font-family="JetBrains Mono" font-size="9" fill="#ddd">ref c=1.0</text>
+                        <line id="deltaC4" x1="590" y1="220" x2="628" y2="220" stroke="#ff9800" stroke-width="2.4" marker-end="url(#arrowOrange4)"/>
+                        <line id="deltaSig4" x1="628" y1="220" x2="628" y2="195" stroke="#ff4dd2" stroke-width="2.4" marker-end="url(#arrowMagenta4)"/>
+                        <text id="labelDeltaC4" x="600" y="238" font-family="JetBrains Mono" font-size="10" fill="#ffb74d">Δc</text>
+                        <text id="labelDeltaSig4" x="632" y="208" font-family="JetBrains Mono" font-size="10" fill="#ff77dd">Δσ²*</text>
+                    </g>
+
+                    <g id="layerGeoGroup4">
+                        <line id="tangent4" x1="500" y1="250" x2="680" y2="180" stroke="rgba(102,187,106,0.45)" stroke-width="1.6" stroke-dasharray="6,5"/>
+                        <line id="normalVec4" x1="590" y1="220" x2="572" y2="190" stroke="#4dd0e1" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrowCyan4)"/>
+                        <text id="labelNormalVec4" x="548" y="186" font-family="JetBrains Mono" font-size="10" fill="#80deea">n (normal 2D)</text>
+                    </g>
+
+                    <rect x="622" y="320" width="110" height="74" rx="6" fill="rgba(255,213,79,0.12)" stroke="#ffd54f" stroke-width="1.5"/>
+                    <text x="628" y="341" font-family="Crimson Pro" font-size="13" fill="#fff59d" font-style="italic">μ = -dσ²*/dc</text>
+                    <text id="muResult4" x="648" y="375" font-family="JetBrains Mono" font-size="16" fill="#fff" font-weight="bold">0.00</text>
+
+                    <rect x="420" y="320" width="196" height="84" rx="6" fill="rgba(0,0,0,0.46)" stroke="rgba(255,255,255,0.22)"/>
+                    <text x="428" y="340" font-family="Crimson Pro" font-size="11" fill="#a5d6a7">verde: gradiente no corte (direção tangente)</text>
+                    <text x="428" y="356" font-family="Crimson Pro" font-size="11" fill="#ffb74d">laranja: Δc (horizontal, delta finito)</text>
+                    <text x="428" y="372" font-family="Crimson Pro" font-size="11" fill="#ff77dd">magenta: Δσ²* (vertical, delta finito)</text>
+                    <text x="428" y="388" font-family="Crimson Pro" font-size="11" fill="#80deea">ciano: normal da curva 2D (não da superfície 3D)</text>
                 </svg>
             </div>
 
@@ -766,11 +826,13 @@
                     <strong>Direita:</strong> A curva azul mostra esse mínimo σ²*(c) para cada valor de c.<br>
                     A <strong>inclinação da tangente</strong> é <span class="math">dσ²*/dc</span>, e com a convenção
                     <span class="math">L = f + μ(λ₁ + λ₂ - c)</span> vale <span class="math">μ = -dσ²*/dc</span>.
-                    No corte: vetor <span style="color:#a5d6a7;">verde</span> (tangente) = componente
-                    <span style="color:#ffb74d;">laranja</span> em c + componente
-                    <span style="color:#ff77dd;">magenta</span> em σ². O vetor
-                    <span style="color:#80deea;">ciano</span> é a normal da <strong>curva 2D</strong> no corte
-                    (nao e a normal da superficie 3D do erro).
+                </div>
+                <div class="math-box">
+                    <strong>Gradiente x Delta (diferença didática):</strong><br>
+                    <strong>Gradiente</strong> (camada "gradientes"): quantidade local/infinitezimal (direção e taxa instantânea).<br>
+                    <strong>Delta</strong> (camada "deltas"): variação finita em relação ao ponto de referência <span class="math">c = 1.0</span>.<br>
+                    No corte da direita: <span style="color:#80deea;">normal 2D</span> é ortogonal à curva <strong>no gráfico 2D</strong>,
+                    não a normal da superfície 3D original do erro.
                 </div>
 
                 <div class="key-insight">
@@ -939,6 +1001,107 @@
                     <strong>u</strong>: quando <strong>u = 0</strong>, o ponto laranja coincide com o mínimo restrito
                     (comp. tangencial ~ 0). Para <strong>u ≠ 0</strong>, a componente tangencial aparece e, no painel
                     direito, surge um <em>gap</em> entre o valor atual e a curva de mínimos.
+                </p>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 6: EXEMPLO DINÂMICO (KO vs KS) -->
+        <div class="section">
+            <h2 class="section-title">6. Exemplo Dinâmico: Krigagem Ordinária vs "Krigagem Simples" (2 amostras)</h2>
+
+            <div class="explanation">
+                <p>
+                    Agora saímos da geometria e fazemos conta numérica. Ajuste as posições das duas amostras e veja,
+                    em tempo real, os pesos, a soma dos pesos, a estimativa e a variância para:
+                    <strong>OK (com restrição Σw=1)</strong> e <strong>SK/sem restrição (Cw=c0)</strong>.
+                </p>
+            </div>
+
+            <div class="controls">
+                <div class="slider-group">
+                    <label>x₁:</label>
+                    <input type="range" id="exX1" min="-2" max="8" step="0.1" value="0">
+                    <span class="value-display" id="exX1Val">0.0</span>
+                </div>
+                <div class="slider-group">
+                    <label>x₂:</label>
+                    <input type="range" id="exX2" min="2" max="14" step="0.1" value="10">
+                    <span class="value-display" id="exX2Val">10.0</span>
+                </div>
+                <div class="slider-group">
+                    <label>x₀ (alvo):</label>
+                    <input type="range" id="exX0" min="-2" max="14" step="0.1" value="6">
+                    <span class="value-display" id="exX0Val">6.0</span>
+                </div>
+                <div class="slider-group">
+                    <label>z₁:</label>
+                    <input type="range" id="exZ1" min="0" max="30" step="0.1" value="12">
+                    <span class="value-display" id="exZ1Val">12.0</span>
+                </div>
+                <div class="slider-group">
+                    <label>z₂:</label>
+                    <input type="range" id="exZ2" min="0" max="30" step="0.1" value="20">
+                    <span class="value-display" id="exZ2Val">20.0</span>
+                </div>
+                <div class="slider-group">
+                    <label>m (média conhecida p/ SK):</label>
+                    <input type="range" id="exMean" min="0" max="30" step="0.1" value="15">
+                    <span class="value-display" id="exMeanVal">15.0</span>
+                </div>
+                <div class="slider-group">
+                    <label>σ²:</label>
+                    <input type="range" id="exSigma2" min="0.5" max="3.0" step="0.1" value="1.0">
+                    <span class="value-display" id="exSigma2Val">1.0</span>
+                </div>
+                <div class="slider-group">
+                    <label>a (alcance):</label>
+                    <input type="range" id="exRange" min="1" max="12" step="0.1" value="6">
+                    <span class="value-display" id="exRangeVal">6.0</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="applySkToFigures" style="width:auto; max-width: 320px; margin: 0;">Aplicar c_SK = (w₁+w₂) na Figura 4/5</button>
+                <div class="status-box status-suboptimal" id="exStatus">Ajuste os sliders para atualizar o exemplo.</div>
+            </div>
+
+            <div class="example-grid">
+                <div class="math-box">
+<pre class="example-matrix" id="exampleMatrices">
+C = [[...], [...]]
+c0 = [...]
+
+OK: [C 1; 1ᵀ 0] [w1 w2 μ]ᵀ = [c0 1]ᵀ
+SK: C [w1 w2]ᵀ = c0
+</pre>
+                </div>
+                <div>
+                    <table class="result-table">
+                        <thead>
+                            <tr>
+                                <th>Quantidade</th>
+                                <th>SK (sem Σw=1)</th>
+                                <th>OK (Σw=1)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>w₁</td><td id="skW1">-</td><td id="okW1">-</td></tr>
+                            <tr><td>w₂</td><td id="skW2">-</td><td id="okW2">-</td></tr>
+                            <tr><td>Σw</td><td id="skSum">-</td><td id="okSum">-</td></tr>
+                            <tr><td>z* (estimativa)</td><td id="skEst">-</td><td id="okEst">-</td></tr>
+                            <tr><td>σ²_K (variância)</td><td id="skVar">-</td><td id="okVar">-</td></tr>
+                            <tr><td>μ (apenas OK)</td><td>—</td><td id="okMu">-</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="key-insight" style="margin-top: 1rem;">
+                <div class="key-insight-title">Ligação com as Figuras 4 e 5</div>
+                <p id="exampleLinkText">
+                    No caso SK (sem restrição), a soma dos pesos pode não ser 1. Esse valor
+                    <span class="math">c_SK = w₁ + w₂</span> é o "c efetivo" sem restrição.
+                    Use o botão para projetar esse c nas figuras geométricas.
                 </p>
             </div>
         </div>
@@ -1239,28 +1402,58 @@
         const slider4 = document.getElementById('slider4');
         const val4 = document.getElementById('val4');
         const status4 = document.getElementById('status4');
-        
-        // Elementos do painel esquerdo
+        const layerGrad4 = document.getElementById('layerGrad4');
+        const layerDelta4 = document.getElementById('layerDelta4');
+        const layerGeo4 = document.getElementById('layerGeo4');
+
+        // Grupos de camada
+        const layerGradLeft4 = document.getElementById('layerGradLeft4');
+        const layerGradRight4 = document.getElementById('layerGradRight4');
+        const layerDeltaLeft4 = document.getElementById('layerDeltaLeft4');
+        const layerDeltaRight4 = document.getElementById('layerDeltaRight4');
+        const layerGeoGroup4 = document.getElementById('layerGeoGroup4');
+
+        // Painel esquerdo
         const point4left = document.getElementById('point4left');
+        const refPoint4left = document.getElementById('refPoint4left');
+        const refLabel4 = document.getElementById('refLabel4');
         const gradF4 = document.getElementById('gradF4');
         const gradG4 = document.getElementById('gradG4');
         const labelF4 = document.getElementById('labelF4');
         const labelG4 = document.getElementById('labelG4');
+        const deltaLam14 = document.getElementById('deltaLam14');
+        const deltaLam24 = document.getElementById('deltaLam24');
+        const labelDeltaLam14 = document.getElementById('labelDeltaLam14');
+        const labelDeltaLam24 = document.getElementById('labelDeltaLam24');
         const constraint100 = document.getElementById('constraint100');
-        
-        // Elementos do painel direito
+
+        // Painel direito
         const point4right = document.getElementById('point4right');
+        const refPoint4right = document.getElementById('refPoint4right');
+        const refPointLabel4 = document.getElementById('refPointLabel4');
         const vline4 = document.getElementById('vline4');
         const tangent4 = document.getElementById('tangent4');
-        const muResult4 = document.getElementById('muResult4');
         const tanVec4 = document.getElementById('tanVec4');
-        const compCVec4 = document.getElementById('compCVec4');
-        const compSigVec4 = document.getElementById('compSigVec4');
         const normalVec4 = document.getElementById('normalVec4');
+        const deltaC4 = document.getElementById('deltaC4');
+        const deltaSig4 = document.getElementById('deltaSig4');
         const labelTanVec4 = document.getElementById('labelTanVec4');
-        const labelCompCVec4 = document.getElementById('labelCompCVec4');
-        const labelCompSigVec4 = document.getElementById('labelCompSigVec4');
         const labelNormalVec4 = document.getElementById('labelNormalVec4');
+        const labelDeltaC4 = document.getElementById('labelDeltaC4');
+        const labelDeltaSig4 = document.getElementById('labelDeltaSig4');
+        const muResult4 = document.getElementById('muResult4');
+
+        function applyLayerVisibility4() {
+            const showGrad = layerGrad4 ? layerGrad4.checked : true;
+            const showDelta = layerDelta4 ? layerDelta4.checked : true;
+            const showGeo = layerGeo4 ? layerGeo4.checked : true;
+
+            if (layerGradLeft4) layerGradLeft4.style.display = showGrad ? 'block' : 'none';
+            if (layerGradRight4) layerGradRight4.style.display = showGrad ? 'block' : 'none';
+            if (layerDeltaLeft4) layerDeltaLeft4.style.display = showDelta ? 'block' : 'none';
+            if (layerDeltaRight4) layerDeltaRight4.style.display = showDelta ? 'block' : 'none';
+            if (layerGeoGroup4) layerGeoGroup4.style.display = showGeo ? 'block' : 'none';
+        }
 
         function updateSection4() {
             const c = slider4.value / 100;
@@ -1270,50 +1463,65 @@
             const dSigDc = dOptimalErrorDc(c);
             const mu = muValue(c);
 
-            // ========== ATUALIZAR PAINEL ESQUERDO ==========
-            // Solução analítica do mínimo de f(λ1, c-λ1) sobre a linha λ1 + λ2 = c
+            // -------- painel esquerdo --------
             const lam1Opt = 0.5 * (c + skCenter.lam1 - skCenter.lam2);
             const lam2Opt = c - lam1Opt;
-            
             const xLeft = lamToXLeft(lam1Opt);
             const yLeft = lamToYLeft(lam2Opt);
-            
             point4left.setAttribute('cx', xLeft);
             point4left.setAttribute('cy', yLeft);
-            
-            // Atualizar a linha da restrição atual
-            // λ₁ + λ₂ = c → passa por (0, c) e (c, 0)
+
+            const cRef = 1.0;
+            const lam1Ref = 0.5 * (cRef + skCenter.lam1 - skCenter.lam2);
+            const lam2Ref = cRef - lam1Ref;
+            const xLeftRef = lamToXLeft(lam1Ref);
+            const yLeftRef = lamToYLeft(lam2Ref);
+            refPoint4left.setAttribute('cx', xLeftRef);
+            refPoint4left.setAttribute('cy', yLeftRef);
+            refLabel4.setAttribute('x', xLeftRef + 8);
+
+            deltaLam14.setAttribute('x1', xLeftRef);
+            deltaLam14.setAttribute('y1', yLeftRef);
+            deltaLam14.setAttribute('x2', xLeft);
+            deltaLam14.setAttribute('y2', yLeftRef);
+
+            deltaLam24.setAttribute('x1', xLeft);
+            deltaLam24.setAttribute('y1', yLeftRef);
+            deltaLam24.setAttribute('x2', xLeft);
+            deltaLam24.setAttribute('y2', yLeft);
+
+            labelDeltaLam14.setAttribute('x', (xLeft + xLeftRef) * 0.5 - 10);
+            labelDeltaLam14.setAttribute('y', yLeftRef + 14);
+            labelDeltaLam24.setAttribute('x', xLeft + 5);
+            labelDeltaLam24.setAttribute('y', (yLeft + yLeftRef) * 0.5 + (yLeft > yLeftRef ? 10 : -6));
+
+            // Restrição ativa λ1 + λ2 = c
             const x1Constraint = lamToXLeft(0);
             const y1Constraint = lamToYLeft(c);
             const x2Constraint = lamToXLeft(c);
             const y2Constraint = lamToYLeft(0);
-            
             constraint100.setAttribute('x1', x1Constraint);
             constraint100.setAttribute('y1', Math.max(50, y1Constraint));
             constraint100.setAttribute('x2', Math.min(295, x2Constraint));
             constraint100.setAttribute('y2', Math.min(290, y2Constraint));
-            
-            // Gradiente ∇f no ponto ótimo
+
+            // Gradientes na vista λ
             const gf = gradF(lam1Opt, lam2Opt);
-            const gfMag = Math.sqrt(gf.x * gf.x + gf.y * gf.y);
+            const gfMag = Math.hypot(gf.x, gf.y);
             const gfScale = 45 / Math.max(gfMag, 0.1);
-            
             const gfEndX = xLeft + gf.x * gfScale;
             const gfEndY = yLeft - gf.y * gfScale;
-            
             gradF4.setAttribute('x1', xLeft);
             gradF4.setAttribute('y1', yLeft);
             gradF4.setAttribute('x2', gfEndX);
             gradF4.setAttribute('y2', gfEndY);
             labelF4.setAttribute('x', gfEndX + 5);
             labelF4.setAttribute('y', gfEndY - 3);
-            
-            // Gradiente ∇g (sempre na direção (1,1) normalizada, perpendicular à restrição)
+
             const ggScale = 30;
-            const ggDir = { x: 1/Math.sqrt(2), y: 1/Math.sqrt(2) };
+            const ggDir = { x: 1 / Math.sqrt(2), y: 1 / Math.sqrt(2) };
             const ggEndX = xLeft + ggDir.x * ggScale;
             const ggEndY = yLeft - ggDir.y * ggScale;
-            
             gradG4.setAttribute('x1', xLeft);
             gradG4.setAttribute('y1', yLeft);
             gradG4.setAttribute('x2', ggEndX);
@@ -1321,57 +1529,69 @@
             labelG4.setAttribute('x', ggEndX + 3);
             labelG4.setAttribute('y', ggEndY - 2);
 
-            // ========== ATUALIZAR PAINEL DIREITO ==========
+            // -------- painel direito --------
             const xRight = cToXRight(c);
             const yRight = sigToYRight(sig);
-
             point4right.setAttribute('cx', xRight);
             point4right.setAttribute('cy', yRight);
-
             vline4.setAttribute('x1', xRight);
             vline4.setAttribute('x2', xRight);
             vline4.setAttribute('y2', yRight);
 
-            // Tangente no painel direito (curva de perfil sigma2*(c)):
-            // y_screen = 280 - 400 * sigma2*(c), x_screen = 450 + 240 * c
-            // => dy/dx (screen) = -(400/240) * d(sigma2*)/dc
+            const xRef = cToXRight(cRef);
+            const yRef = sigToYRight(optimalError(cRef));
+            refPoint4right.setAttribute('cx', xRef);
+            refPoint4right.setAttribute('cy', yRef);
+            refPointLabel4.setAttribute('x', xRef + 8);
+            refPointLabel4.setAttribute('y', yRef - 8);
+
+            // Deltas finitos em relação ao ponto de referência c=1.0
+            deltaC4.setAttribute('x1', xRef);
+            deltaC4.setAttribute('y1', yRef);
+            deltaC4.setAttribute('x2', xRight);
+            deltaC4.setAttribute('y2', yRef);
+
+            deltaSig4.setAttribute('x1', xRight);
+            deltaSig4.setAttribute('y1', yRef);
+            deltaSig4.setAttribute('x2', xRight);
+            deltaSig4.setAttribute('y2', yRight);
+
+            labelDeltaC4.setAttribute('x', (xRight + xRef) * 0.5 - 10);
+            labelDeltaC4.setAttribute('y', yRef + 16);
+            labelDeltaSig4.setAttribute('x', xRight + 4);
+            labelDeltaSig4.setAttribute('y', (yRight + yRef) * 0.5 + (yRight > yRef ? 10 : -6));
+
+            // Gradiente no corte e tangente geométrica
             const slopeScreen = -(400 / 240) * dSigDc;
-            const tangLen = 60;
+            const tangLen = 74;
             tangent4.setAttribute('x1', xRight - tangLen);
             tangent4.setAttribute('y1', yRight + slopeScreen * (-tangLen));
             tangent4.setAttribute('x2', xRight + tangLen);
             tangent4.setAttribute('y2', yRight + slopeScreen * tangLen);
 
-            // Decomposição da direção tangente (verde = laranja + magenta)
-            const compDx = 38;
-            const compDy = slopeScreen * compDx;
-            const compEndX = xRight + compDx;
-            const compEndY = yRight + compDy;
-
+            const baseDx = 1;
+            const baseDy = slopeScreen;
+            const baseNorm = Math.hypot(baseDx, baseDy) || 1;
+            const gradLen = 36;
+            const gdx = (baseDx / baseNorm) * gradLen;
+            const gdy = (baseDy / baseNorm) * gradLen;
+            const gEndX = xRight + gdx;
+            const gEndY = yRight + gdy;
             tanVec4.setAttribute('x1', xRight);
             tanVec4.setAttribute('y1', yRight);
-            tanVec4.setAttribute('x2', compEndX);
-            tanVec4.setAttribute('y2', compEndY);
+            tanVec4.setAttribute('x2', gEndX);
+            tanVec4.setAttribute('y2', gEndY);
+            labelTanVec4.setAttribute('x', gEndX > 672 ? gEndX - 104 : gEndX + 4);
+            labelTanVec4.setAttribute('y', gEndY - 4);
 
-            compCVec4.setAttribute('x1', xRight);
-            compCVec4.setAttribute('y1', yRight);
-            compCVec4.setAttribute('x2', compEndX);
-            compCVec4.setAttribute('y2', yRight);
-
-            compSigVec4.setAttribute('x1', compEndX);
-            compSigVec4.setAttribute('y1', yRight);
-            compSigVec4.setAttribute('x2', compEndX);
-            compSigVec4.setAttribute('y2', compEndY);
-
-            // Normal da curva no corte (2D), ortogonal à tangente local.
-            let nDx = -compDy;
-            let nDy = compDx;
+            // Normal 2D no corte (perpendicular à tangente da curva)
+            let nDx = -baseDy;
+            let nDy = baseDx;
             const nNorm = Math.hypot(nDx, nDy) || 1;
-            const nLen = 30;
+            const nLen = 32;
             nDx = (nDx / nNorm) * nLen;
             nDy = (nDy / nNorm) * nLen;
-            // Mantem a normal apontando para cima no painel, para leitura consistente.
-            if (nDy > 0) {
+            if (nDy > 0) { // manter orientação visual para cima
                 nDx = -nDx;
                 nDy = -nDy;
             }
@@ -1381,32 +1601,24 @@
             normalVec4.setAttribute('y1', yRight);
             normalVec4.setAttribute('x2', nEndX);
             normalVec4.setAttribute('y2', nEndY);
-
-            labelTanVec4.setAttribute('x', compEndX > 676 ? compEndX - 80 : compEndX + 6);
-            labelTanVec4.setAttribute('y', compEndY - 4);
-            labelCompCVec4.setAttribute('x', xRight + 6);
-            labelCompCVec4.setAttribute('y', yRight + 16);
-            labelCompSigVec4.setAttribute('x', compEndX > 690 ? compEndX - 84 : compEndX + 4);
-            labelCompSigVec4.setAttribute('y', yRight + compDy * 0.5 - 2);
-            labelNormalVec4.setAttribute('x', nEndX < 520 ? nEndX + 4 : nEndX - 60);
-            labelNormalVec4.setAttribute('y', nEndY - 4);
+            labelNormalVec4.setAttribute('x', nEndX < 520 ? nEndX + 4 : nEndX - 66);
+            labelNormalVec4.setAttribute('y', nEndY - 3);
 
             muResult4.textContent = `${mu >= 0 ? '+' : ''}${mu.toFixed(2)}`;
 
-            // Status
             if (Math.abs(c - 1.0) < 0.02) {
                 status4.className = 'status-box status-optimal';
-                status4.textContent = `c = 1.00 (OK) | σ²* = ${sig.toFixed(3)} | dσ²*/dc = ${dSigDc.toFixed(2)} | μ = ${mu.toFixed(2)}`;
-            } else if (Math.abs(c - cStar) < 0.03) {
-                status4.className = 'status-box status-optimal';
-                status4.textContent = `c = ${c.toFixed(2)} (SK) | σ²* = ${sig.toFixed(3)} | dσ²*/dc ≈ 0 | μ ≈ 0`;
             } else {
                 status4.className = 'status-box status-suboptimal';
-                status4.textContent = `c = ${c.toFixed(2)} | σ²* = ${sig.toFixed(3)} | dσ²*/dc = ${dSigDc.toFixed(2)} | μ = ${mu.toFixed(2)}`;
             }
+            status4.textContent = `c = ${c.toFixed(2)} | sigma2* = ${sig.toFixed(3)} | dsigma2*/dc = ${dSigDc.toFixed(2)} | mu = ${mu.toFixed(2)}`;
         }
 
         slider4.addEventListener('input', updateSection4);
+        [layerGrad4, layerDelta4, layerGeo4].forEach((cb) => {
+            cb.addEventListener('change', applyLayerVisibility4);
+        });
+        applyLayerVisibility4();
         updateSection4();
 
         // ============================================
@@ -1643,6 +1855,191 @@
             slider5u.addEventListener("input", updateSection5);
             updateSection5();
         }
+
+        // ============================================
+        // SEÇÃO 6 - EXEMPLO NUMÉRICO (OK vs SK) COM 2 AMOSTRAS
+        // ============================================
+        const exInputs = {
+            x1: document.getElementById('exX1'),
+            x2: document.getElementById('exX2'),
+            x0: document.getElementById('exX0'),
+            z1: document.getElementById('exZ1'),
+            z2: document.getElementById('exZ2'),
+            mean: document.getElementById('exMean'),
+            sigma2: document.getElementById('exSigma2'),
+            range: document.getElementById('exRange')
+        };
+
+        const exDisplays = {
+            x1: document.getElementById('exX1Val'),
+            x2: document.getElementById('exX2Val'),
+            x0: document.getElementById('exX0Val'),
+            z1: document.getElementById('exZ1Val'),
+            z2: document.getElementById('exZ2Val'),
+            mean: document.getElementById('exMeanVal'),
+            sigma2: document.getElementById('exSigma2Val'),
+            range: document.getElementById('exRangeVal')
+        };
+
+        const exStatus = document.getElementById('exStatus');
+        const exampleMatrices = document.getElementById('exampleMatrices');
+        const exampleLinkText = document.getElementById('exampleLinkText');
+        const applySkToFiguresBtn = document.getElementById('applySkToFigures');
+
+        const outSkW1 = document.getElementById('skW1');
+        const outSkW2 = document.getElementById('skW2');
+        const outSkSum = document.getElementById('skSum');
+        const outSkEst = document.getElementById('skEst');
+        const outSkVar = document.getElementById('skVar');
+
+        const outOkW1 = document.getElementById('okW1');
+        const outOkW2 = document.getElementById('okW2');
+        const outOkSum = document.getElementById('okSum');
+        const outOkEst = document.getElementById('okEst');
+        const outOkVar = document.getElementById('okVar');
+        const outOkMu = document.getElementById('okMu');
+
+        let lastExample = null;
+
+        function nfmt(value, digits = 4) {
+            if (!Number.isFinite(value)) return 'NaN';
+            return value.toFixed(digits);
+        }
+
+        function clamp(value, min, max) {
+            return Math.max(min, Math.min(max, value));
+        }
+
+        function readExampleValues() {
+            return {
+                x1: Number(exInputs.x1.value),
+                x2: Number(exInputs.x2.value),
+                x0: Number(exInputs.x0.value),
+                z1: Number(exInputs.z1.value),
+                z2: Number(exInputs.z2.value),
+                mean: Number(exInputs.mean.value),
+                sigma2: Number(exInputs.sigma2.value),
+                range: Number(exInputs.range.value)
+            };
+        }
+
+        function updateExampleDisplays(values) {
+            exDisplays.x1.textContent = values.x1.toFixed(1);
+            exDisplays.x2.textContent = values.x2.toFixed(1);
+            exDisplays.x0.textContent = values.x0.toFixed(1);
+            exDisplays.z1.textContent = values.z1.toFixed(1);
+            exDisplays.z2.textContent = values.z2.toFixed(1);
+            exDisplays.mean.textContent = values.mean.toFixed(1);
+            exDisplays.sigma2.textContent = values.sigma2.toFixed(1);
+            exDisplays.range.textContent = values.range.toFixed(1);
+        }
+
+        function updateExampleSection() {
+            const v = readExampleValues();
+            updateExampleDisplays(v);
+
+            if (Math.abs(v.x1 - v.x2) < 1e-6) {
+                exStatus.className = 'status-box status-suboptimal';
+                exStatus.textContent = 'x1 e x2 nao podem coincidir (matriz singular).';
+                return;
+            }
+
+            const C11 = covariance(0, v.sigma2, v.range);
+            const C22 = covariance(0, v.sigma2, v.range);
+            const C12 = covariance(v.x1 - v.x2, v.sigma2, v.range);
+            const c01 = covariance(v.x1 - v.x0, v.sigma2, v.range);
+            const c02 = covariance(v.x2 - v.x0, v.sigma2, v.range);
+
+            const C = [
+                [C11, C12],
+                [C12, C22]
+            ];
+            const c0 = [c01, c02];
+
+            try {
+                // "SK/sem restricao": Cw = c0 (com media conhecida m no estimador)
+                const wSk = gaussianSolve(C, c0);
+                const sumSk = wSk[0] + wSk[1];
+                const zSk = v.mean + wSk[0] * (v.z1 - v.mean) + wSk[1] * (v.z2 - v.mean);
+                const varSk = v.sigma2 - (wSk[0] * c01 + wSk[1] * c02);
+
+                // OK: [C 1; 1ᵀ 0][w; mu] = [c0; 1]
+                const Aok = [
+                    [C11, C12, 1],
+                    [C12, C22, 1],
+                    [1, 1, 0]
+                ];
+                const bok = [c01, c02, 1];
+                const okSol = gaussianSolve(Aok, bok);
+                const wOk = [okSol[0], okSol[1]];
+                const muOk = okSol[2];
+                const sumOk = wOk[0] + wOk[1];
+                const zOk = wOk[0] * v.z1 + wOk[1] * v.z2;
+                const varOk = v.sigma2 - (wOk[0] * c01 + wOk[1] * c02) - muOk;
+
+                outSkW1.textContent = nfmt(wSk[0], 5);
+                outSkW2.textContent = nfmt(wSk[1], 5);
+                outSkSum.textContent = nfmt(sumSk, 5);
+                outSkEst.textContent = nfmt(zSk, 5);
+                outSkVar.textContent = nfmt(varSk, 5);
+
+                outOkW1.textContent = nfmt(wOk[0], 5);
+                outOkW2.textContent = nfmt(wOk[1], 5);
+                outOkSum.textContent = nfmt(sumOk, 5);
+                outOkEst.textContent = nfmt(zOk, 5);
+                outOkVar.textContent = nfmt(varOk, 5);
+                outOkMu.textContent = nfmt(muOk, 5);
+
+                exampleMatrices.textContent =
+                    `C = [[${nfmt(C11, 5)}, ${nfmt(C12, 5)}],\n` +
+                    `     [${nfmt(C12, 5)}, ${nfmt(C22, 5)}]]\n` +
+                    `c0 = [${nfmt(c01, 5)}, ${nfmt(c02, 5)}]\n\n` +
+                    `OK: [C 1; 1ᵀ 0] [w1 w2 mu]ᵀ = [c0 1]ᵀ\n` +
+                    `SK: C [w1 w2]ᵀ = c0`;
+
+                const cSk = sumSk;
+                lastExample = { cSk };
+                exampleLinkText.innerHTML =
+                    `No caso SK, c_SK = w₁ + w₂ = <b>${nfmt(cSk, 5)}</b>. ` +
+                    `Quando c_SK difere de 1, a restrição de não-vies da OK está "forçando" uma solução diferente. ` +
+                    `Use o botão para jogar esse c_SK na Figura 4/5.`;
+
+                if (Math.abs(sumSk - 1) < 0.03) {
+                    exStatus.className = 'status-box status-optimal';
+                    exStatus.textContent = `SK quase nao-vies (Σw ≈ 1): Σw_SK=${sumSk.toFixed(3)} | μ_OK=${muOk.toFixed(3)}`;
+                } else {
+                    exStatus.className = 'status-box status-suboptimal';
+                    exStatus.textContent = `SK sem restricao: Σw_SK=${sumSk.toFixed(3)} (difere de 1) | OK impõe Σw=1 via μ=${muOk.toFixed(3)}`;
+                }
+            } catch (err) {
+                exStatus.className = 'status-box status-suboptimal';
+                exStatus.textContent = `Falha numerica: ${err.message}`;
+            }
+        }
+
+        Object.values(exInputs).forEach((input) => {
+            input.addEventListener('input', updateExampleSection);
+        });
+
+        applySkToFiguresBtn.addEventListener('click', () => {
+            if (!lastExample) return;
+            const cTarget = clamp(lastExample.cSk, 0.5, 1.3);
+            const sliderRaw = Math.round(cTarget * 100);
+
+            slider4.value = String(sliderRaw);
+            slider4.dispatchEvent(new Event('input'));
+
+            if (slider5c) {
+                slider5c.value = String(sliderRaw);
+                slider5c.dispatchEvent(new Event('input'));
+            }
+            if (slider5u) {
+                slider5u.value = '0';
+                slider5u.dispatchEvent(new Event('input'));
+            }
+        });
+
+        updateExampleSection();
     </script>
 </body>
 </html>

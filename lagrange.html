@@ -603,6 +603,9 @@
                         <marker id="arrowPurple4" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
                             <polygon points="0 0, 6 2.5, 0 5" fill="#ab47bc"/>
                         </marker>
+                        <marker id="arrowGreen4" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+                            <polygon points="0 0, 6 2.5, 0 5" fill="#66bb6a"/>
+                        </marker>
                     </defs>
 
                     <!-- ========== PAINEL ESQUERDO: Vista de Cima (espaço λ₁, λ₂) ========== -->
@@ -705,20 +708,28 @@
                     <text x="520" y="310" font-family="JetBrains Mono" font-size="9" fill="#64b5f6">SK (c≈0.75)</text>
 
                     <!-- Tangente à curva (verde) -->
-                    <line id="tangent4" x1="500" y1="250" x2="680" y2="180" stroke="#66bb6a" stroke-width="2"/>
+                    <line id="tangent4" x1="500" y1="250" x2="680" y2="180" stroke="rgba(102,187,106,0.55)" stroke-width="1.8" stroke-dasharray="5,4"/>
 
                     <!-- Ponto na curva (correspondente ao ponto esquerdo) -->
                     <circle id="point4right" cx="590" cy="220" r="9" fill="#ff5722" stroke="#fff" stroke-width="2"/>
+
+                    <!-- Vetor tangente local e componentes -->
+                    <line id="tanVec4" x1="590" y1="220" x2="628" y2="195" stroke="#66bb6a" stroke-width="3" marker-end="url(#arrowGreen4)"/>
+                    <line id="compCVec4" x1="590" y1="220" x2="628" y2="220" stroke="#ff9800" stroke-width="2.2" marker-end="url(#arrowOrange4)"/>
+                    <line id="compSigVec4" x1="628" y1="220" x2="628" y2="195" stroke="#ab47bc" stroke-width="2.2" marker-end="url(#arrowPurple4)"/>
+                    <text id="labelTanVec4" x="634" y="192" font-family="Crimson Pro" font-size="11" fill="#a5d6a7">direção tangente</text>
+                    <text id="labelCompCVec4" x="596" y="236" font-family="JetBrains Mono" font-size="10" fill="#ffb74d">comp. c</text>
+                    <text id="labelCompSigVec4" x="632" y="208" font-family="JetBrains Mono" font-size="10" fill="#ce93d8">comp. σ²</text>
 
                     <!-- Linha vertical do ponto ao eixo -->
                     <line id="vline4" x1="590" y1="280" x2="590" y2="220" stroke="#ff5722" stroke-width="1.5" stroke-dasharray="5,3"/>
 
                     <!-- Triângulo Δc, Δσ² -->
                     <g id="slopeTriangle4">
-                        <line id="deltaC4" x1="590" y1="220" x2="640" y2="220" stroke="#ffd54f" stroke-width="2"/>
-                        <line id="deltaSig4" x1="640" y1="220" x2="640" y2="195" stroke="#ffd54f" stroke-width="2"/>
-                        <text id="labelDeltaC4" x="605" y="238" font-family="JetBrains Mono" font-size="10" fill="#ffd54f">Δc</text>
-                        <text id="labelDeltaSig4" x="645" y="212" font-family="JetBrains Mono" font-size="10" fill="#ffd54f">Δσ²</text>
+                        <line id="deltaC4" x1="590" y1="220" x2="640" y2="220" stroke="#ff9800" stroke-width="2"/>
+                        <line id="deltaSig4" x1="640" y1="220" x2="640" y2="195" stroke="#ab47bc" stroke-width="2"/>
+                        <text id="labelDeltaC4" x="605" y="238" font-family="JetBrains Mono" font-size="10" fill="#ffb74d">Δc</text>
+                        <text id="labelDeltaSig4" x="645" y="212" font-family="JetBrains Mono" font-size="10" fill="#ce93d8">Δσ²</text>
                     </g>
 
                     <!-- Caixa μ -->
@@ -728,9 +739,11 @@
 
                     <!-- Explicação da tangente -->
                     <g font-family="Crimson Pro" font-size="10">
-                        <rect x="660" y="150" width="70" height="40" rx="4" fill="rgba(102,187,106,0.15)" stroke="#66bb6a"/>
-                        <text x="668" y="168" fill="#a5d6a7">Tangente</text>
-                        <text x="668" y="182" fill="#a5d6a7">à curva</text>
+                        <rect x="650" y="150" width="82" height="70" rx="4" fill="rgba(102,187,106,0.12)" stroke="#66bb6a"/>
+                        <text x="656" y="168" fill="#a5d6a7">verde: tangente</text>
+                        <text x="656" y="184" fill="#ffb74d">laranja: Δc</text>
+                        <text x="656" y="200" fill="#ce93d8">magenta: Δσ²</text>
+                        <text x="656" y="216" fill="#a5d6a7">μ = -Δσ²/Δc</text>
                     </g>
                 </svg>
             </div>
@@ -743,6 +756,9 @@
                     <strong>Direita:</strong> A curva azul mostra esse mínimo σ²*(c) para cada valor de c.<br>
                     A <strong>inclinação da tangente</strong> é <span class="math">dσ²*/dc</span>, e com a convenção
                     <span class="math">L = f + μ(λ₁ + λ₂ - c)</span> vale <span class="math">μ = -dσ²*/dc</span>.
+                    No corte: vetor <span style="color:#a5d6a7;">verde</span> (tangente) = componente
+                    <span style="color:#ffb74d;">laranja</span> em c + componente
+                    <span style="color:#ce93d8;">magenta</span> em σ².
                 </div>
 
                 <div class="key-insight">
@@ -1067,6 +1083,12 @@
         const labelDeltaC4 = document.getElementById('labelDeltaC4');
         const labelDeltaSig4 = document.getElementById('labelDeltaSig4');
         const muResult4 = document.getElementById('muResult4');
+        const tanVec4 = document.getElementById('tanVec4');
+        const compCVec4 = document.getElementById('compCVec4');
+        const compSigVec4 = document.getElementById('compSigVec4');
+        const labelTanVec4 = document.getElementById('labelTanVec4');
+        const labelCompCVec4 = document.getElementById('labelCompCVec4');
+        const labelCompSigVec4 = document.getElementById('labelCompSigVec4');
 
         function updateSection4() {
             const c = slider4.value / 100;
@@ -1145,6 +1167,34 @@
             tangent4.setAttribute('y1', yRight - slopeSVG * (-tangLen));
             tangent4.setAttribute('x2', xRight + tangLen);
             tangent4.setAttribute('y2', yRight - slopeSVG * tangLen);
+
+            // Decomposição da direção tangente (verde = laranja + magenta)
+            const compDx = 38;
+            const compDy = -slopeSVG * compDx;
+            const compEndX = xRight + compDx;
+            const compEndY = yRight + compDy;
+
+            tanVec4.setAttribute('x1', xRight);
+            tanVec4.setAttribute('y1', yRight);
+            tanVec4.setAttribute('x2', compEndX);
+            tanVec4.setAttribute('y2', compEndY);
+
+            compCVec4.setAttribute('x1', xRight);
+            compCVec4.setAttribute('y1', yRight);
+            compCVec4.setAttribute('x2', compEndX);
+            compCVec4.setAttribute('y2', yRight);
+
+            compSigVec4.setAttribute('x1', compEndX);
+            compSigVec4.setAttribute('y1', yRight);
+            compSigVec4.setAttribute('x2', compEndX);
+            compSigVec4.setAttribute('y2', compEndY);
+
+            labelTanVec4.setAttribute('x', compEndX > 680 ? compEndX - 78 : compEndX + 6);
+            labelTanVec4.setAttribute('y', compEndY - 4);
+            labelCompCVec4.setAttribute('x', xRight + 6);
+            labelCompCVec4.setAttribute('y', yRight + 16);
+            labelCompSigVec4.setAttribute('x', compEndX > 692 ? compEndX - 56 : compEndX + 4);
+            labelCompSigVec4.setAttribute('y', yRight + compDy * 0.5 - 2);
 
             // Triângulo mostrando Δc e Δσ²
             const deltaC_val = 0.2;

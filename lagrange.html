@@ -614,6 +614,12 @@
                         <marker id="arrowGreen4" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
                             <polygon points="0 0, 6 2.5, 0 5" fill="#66bb6a"/>
                         </marker>
+                        <marker id="arrowMagenta4" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+                            <polygon points="0 0, 6 2.5, 0 5" fill="#ff4dd2"/>
+                        </marker>
+                        <marker id="arrowCyan4" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+                            <polygon points="0 0, 6 2.5, 0 5" fill="#4dd0e1"/>
+                        </marker>
                     </defs>
 
                     <!-- ========== PAINEL ESQUERDO: Vista de Cima (espaço λ₁, λ₂) ========== -->
@@ -715,43 +721,39 @@
                     <circle id="minSK4" cx="540" cy="280" r="7" fill="#2196f3" stroke="#fff" stroke-width="1.5"/>
                     <text x="520" y="310" font-family="JetBrains Mono" font-size="9" fill="#64b5f6">SK (c≈0.75)</text>
 
-                    <!-- Tangente à curva (verde) -->
-                    <line id="tangent4" x1="500" y1="250" x2="680" y2="180" stroke="rgba(102,187,106,0.55)" stroke-width="1.8" stroke-dasharray="5,4"/>
+                    <!-- Tangente da curva sigma2*(c) -->
+                    <line id="tangent4" x1="500" y1="250" x2="680" y2="180" stroke="rgba(102,187,106,0.45)" stroke-width="1.6" stroke-dasharray="6,5"/>
 
                     <!-- Ponto na curva (correspondente ao ponto esquerdo) -->
                     <circle id="point4right" cx="590" cy="220" r="9" fill="#ff5722" stroke="#fff" stroke-width="2"/>
 
-                    <!-- Vetor tangente local e componentes -->
+                    <!-- Vetores locais no corte (todos saem do ponto laranja) -->
                     <line id="tanVec4" x1="590" y1="220" x2="628" y2="195" stroke="#66bb6a" stroke-width="3" marker-end="url(#arrowGreen4)"/>
-                    <line id="compCVec4" x1="590" y1="220" x2="628" y2="220" stroke="#ff9800" stroke-width="2.2" marker-end="url(#arrowOrange4)"/>
-                    <line id="compSigVec4" x1="628" y1="220" x2="628" y2="195" stroke="#ab47bc" stroke-width="2.2" marker-end="url(#arrowPurple4)"/>
-                    <text id="labelTanVec4" x="634" y="192" font-family="Crimson Pro" font-size="11" fill="#a5d6a7">direção tangente</text>
-                    <text id="labelCompCVec4" x="596" y="236" font-family="JetBrains Mono" font-size="10" fill="#ffb74d">comp. c</text>
-                    <text id="labelCompSigVec4" x="632" y="208" font-family="JetBrains Mono" font-size="10" fill="#ce93d8">comp. σ²</text>
+                    <line id="compCVec4" x1="590" y1="220" x2="628" y2="220" stroke="#ff9800" stroke-width="2.4" marker-end="url(#arrowOrange4)"/>
+                    <line id="compSigVec4" x1="628" y1="220" x2="628" y2="195" stroke="#ff4dd2" stroke-width="2.4" marker-end="url(#arrowMagenta4)"/>
+                    <line id="normalVec4" x1="590" y1="220" x2="572" y2="190" stroke="#4dd0e1" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrowCyan4)"/>
+                    <text id="labelTanVec4" x="634" y="192" font-family="Crimson Pro" font-size="11" fill="#a5d6a7">t (tangente)</text>
+                    <text id="labelCompCVec4" x="596" y="236" font-family="JetBrains Mono" font-size="10" fill="#ffb74d">Δc (horizontal)</text>
+                    <text id="labelCompSigVec4" x="632" y="208" font-family="JetBrains Mono" font-size="10" fill="#ff77dd">Δσ² (vertical)</text>
+                    <text id="labelNormalVec4" x="548" y="186" font-family="JetBrains Mono" font-size="10" fill="#80deea">n (normal 2D)</text>
 
                     <!-- Linha vertical do ponto ao eixo -->
                     <line id="vline4" x1="590" y1="280" x2="590" y2="220" stroke="#ff5722" stroke-width="1.5" stroke-dasharray="5,3"/>
 
-                    <!-- Triângulo Δc, Δσ² -->
-                    <g id="slopeTriangle4">
-                        <line id="deltaC4" x1="590" y1="220" x2="640" y2="220" stroke="#ff9800" stroke-width="2"/>
-                        <line id="deltaSig4" x1="640" y1="220" x2="640" y2="195" stroke="#ab47bc" stroke-width="2"/>
-                        <text id="labelDeltaC4" x="605" y="238" font-family="JetBrains Mono" font-size="10" fill="#ffb74d">Δc</text>
-                        <text id="labelDeltaSig4" x="645" y="212" font-family="JetBrains Mono" font-size="10" fill="#ce93d8">Δσ²</text>
-                    </g>
-
                     <!-- Caixa μ -->
-                    <rect x="660" y="70" width="70" height="70" rx="6" fill="rgba(255,213,79,0.15)" stroke="#ffd54f" stroke-width="1.5"/>
-                    <text x="662" y="95" font-family="Crimson Pro" font-size="13" fill="#fff59d" font-style="italic">μ = -dσ²*/dc</text>
+                    <rect x="656" y="70" width="76" height="70" rx="6" fill="rgba(255,213,79,0.15)" stroke="#ffd54f" stroke-width="1.5"/>
+                    <text x="659" y="95" font-family="Crimson Pro" font-size="13" fill="#fff59d" font-style="italic">μ = -dσ²*/dc</text>
                     <text id="muResult4" x="675" y="125" font-family="JetBrains Mono" font-size="16" fill="#fff" font-weight="bold">≈ 0.40</text>
 
-                    <!-- Explicação da tangente -->
+                    <!-- Legenda vetorial -->
                     <g font-family="Crimson Pro" font-size="10">
-                        <rect x="650" y="150" width="82" height="70" rx="4" fill="rgba(102,187,106,0.12)" stroke="#66bb6a"/>
-                        <text x="656" y="168" fill="#a5d6a7">verde: tangente</text>
-                        <text x="656" y="184" fill="#ffb74d">laranja: Δc</text>
-                        <text x="656" y="200" fill="#ce93d8">magenta: Δσ²</text>
-                        <text x="656" y="216" fill="#a5d6a7">μ = -Δσ²/Δc</text>
+                        <rect x="638" y="150" width="96" height="108" rx="4" fill="rgba(0,0,0,0.48)" stroke="rgba(255,255,255,0.22)"/>
+                        <text x="644" y="168" fill="#a5d6a7">verde: t tangente</text>
+                        <text x="644" y="184" fill="#ffb74d">laranja: Δc horiz.</text>
+                        <text x="644" y="200" fill="#ff77dd">magenta: Δσ² vert.</text>
+                        <text x="644" y="216" fill="#80deea">ciano: normal 2D</text>
+                        <text x="644" y="232" fill="#fff59d">μ = -Δσ²/Δc</text>
+                        <text x="644" y="248" fill="#b0bec5">Δσ² vert. ≠ normal 3D</text>
                     </g>
                 </svg>
             </div>
@@ -766,7 +768,9 @@
                     <span class="math">L = f + μ(λ₁ + λ₂ - c)</span> vale <span class="math">μ = -dσ²*/dc</span>.
                     No corte: vetor <span style="color:#a5d6a7;">verde</span> (tangente) = componente
                     <span style="color:#ffb74d;">laranja</span> em c + componente
-                    <span style="color:#ce93d8;">magenta</span> em σ².
+                    <span style="color:#ff77dd;">magenta</span> em σ². O vetor
+                    <span style="color:#80deea;">ciano</span> é a normal da <strong>curva 2D</strong> no corte
+                    (nao e a normal da superficie 3D do erro).
                 </div>
 
                 <div class="key-insight">
@@ -1248,17 +1252,15 @@
         const point4right = document.getElementById('point4right');
         const vline4 = document.getElementById('vline4');
         const tangent4 = document.getElementById('tangent4');
-        const deltaC4 = document.getElementById('deltaC4');
-        const deltaSig4 = document.getElementById('deltaSig4');
-        const labelDeltaC4 = document.getElementById('labelDeltaC4');
-        const labelDeltaSig4 = document.getElementById('labelDeltaSig4');
         const muResult4 = document.getElementById('muResult4');
         const tanVec4 = document.getElementById('tanVec4');
         const compCVec4 = document.getElementById('compCVec4');
         const compSigVec4 = document.getElementById('compSigVec4');
+        const normalVec4 = document.getElementById('normalVec4');
         const labelTanVec4 = document.getElementById('labelTanVec4');
         const labelCompCVec4 = document.getElementById('labelCompCVec4');
         const labelCompSigVec4 = document.getElementById('labelCompSigVec4');
+        const labelNormalVec4 = document.getElementById('labelNormalVec4');
 
         function updateSection4() {
             const c = slider4.value / 100;
@@ -1361,34 +1363,33 @@
             compSigVec4.setAttribute('x2', compEndX);
             compSigVec4.setAttribute('y2', compEndY);
 
-            labelTanVec4.setAttribute('x', compEndX > 680 ? compEndX - 78 : compEndX + 6);
+            // Normal da curva no corte (2D), ortogonal à tangente local.
+            let nDx = -compDy;
+            let nDy = compDx;
+            const nNorm = Math.hypot(nDx, nDy) || 1;
+            const nLen = 30;
+            nDx = (nDx / nNorm) * nLen;
+            nDy = (nDy / nNorm) * nLen;
+            // Mantem a normal apontando para cima no painel, para leitura consistente.
+            if (nDy > 0) {
+                nDx = -nDx;
+                nDy = -nDy;
+            }
+            const nEndX = xRight + nDx;
+            const nEndY = yRight + nDy;
+            normalVec4.setAttribute('x1', xRight);
+            normalVec4.setAttribute('y1', yRight);
+            normalVec4.setAttribute('x2', nEndX);
+            normalVec4.setAttribute('y2', nEndY);
+
+            labelTanVec4.setAttribute('x', compEndX > 676 ? compEndX - 80 : compEndX + 6);
             labelTanVec4.setAttribute('y', compEndY - 4);
             labelCompCVec4.setAttribute('x', xRight + 6);
             labelCompCVec4.setAttribute('y', yRight + 16);
-            labelCompSigVec4.setAttribute('x', compEndX > 692 ? compEndX - 56 : compEndX + 4);
+            labelCompSigVec4.setAttribute('x', compEndX > 690 ? compEndX - 84 : compEndX + 4);
             labelCompSigVec4.setAttribute('y', yRight + compDy * 0.5 - 2);
-
-            // Triângulo mostrando Δc e Δσ²
-            const deltaC_val = 0.2;
-            const deltaC_px = deltaC_val * 240;
-            const deltaSig_val = dSigDc * deltaC_val;
-            const deltaSig_px = deltaSig_val * 400;
-
-            deltaC4.setAttribute('x1', xRight);
-            deltaC4.setAttribute('y1', yRight);
-            deltaC4.setAttribute('x2', xRight + deltaC_px);
-            deltaC4.setAttribute('y2', yRight);
-
-            deltaSig4.setAttribute('x1', xRight + deltaC_px);
-            deltaSig4.setAttribute('y1', yRight);
-            deltaSig4.setAttribute('x2', xRight + deltaC_px);
-            deltaSig4.setAttribute('y2', yRight - deltaSig_px);
-
-            labelDeltaC4.setAttribute('x', xRight + deltaC_px/2 - 8);
-            labelDeltaC4.setAttribute('y', yRight + 16);
-
-            labelDeltaSig4.setAttribute('x', xRight + deltaC_px + 4);
-            labelDeltaSig4.setAttribute('y', yRight - deltaSig_px/2 + 4);
+            labelNormalVec4.setAttribute('x', nEndX < 520 ? nEndX + 4 : nEndX - 60);
+            labelNormalVec4.setAttribute('y', nEndY - 4);
 
             muResult4.textContent = `${mu >= 0 ? '+' : ''}${mu.toFixed(2)}`;
 

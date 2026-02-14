@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Krigagem Ordinaria - Multiplicador de Lagrange (Didatico)</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f9fc;
+      --panel: #ffffff;
+      --line: #d7deea;
+      --text: #192334;
+      --muted: #5a6a83;
+      --accent: #1f6feb;
+      --accent-soft: #e8f0ff;
+      --warn: #b54708;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.45;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 1.2rem auto;
+      padding: 0 1rem 1.4rem;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.9rem;
+      box-shadow: 0 1px 0 rgba(16, 24, 40, 0.03);
+    }
+
+    h1, h2, h3 { margin: 0 0 0.55rem; }
+    h1 { font-size: 1.2rem; }
+    h2 { font-size: 1.03rem; margin-top: 0.25rem; }
+    h3 { font-size: 0.95rem; margin-top: 0.15rem; }
+
+    p, li {
+      color: var(--muted);
+      margin: 0.4rem 0;
+      font-size: 0.94rem;
+    }
+
+    .controls {
+      position: sticky;
+      top: 0.5rem;
+      align-self: start;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.42rem 0.5rem;
+      font-size: 0.92rem;
+      color: var(--text);
+      background: #fff;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .sample-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .sample-table th,
+    .sample-table td {
+      border-bottom: 1px solid var(--line);
+      padding: 0.3rem 0.2rem;
+      text-align: left;
+    }
+
+    button {
+      width: 100%;
+      border: 1px solid #1456b8;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 8px;
+      padding: 0.55rem 0.8rem;
+      font-size: 0.94rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.45rem;
+    }
+
+    button:hover { filter: brightness(1.05); }
+
+    .formula {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      background: #f3f7ff;
+      border: 1px solid #d4e2ff;
+      border-radius: 8px;
+      padding: 0.6rem;
+      white-space: pre-wrap;
+      color: #17315f;
+      font-size: 0.86rem;
+    }
+
+    .step {
+      margin-bottom: 0.85rem;
+    }
+
+    .matrix {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-top: 0.35rem;
+    }
+
+    .matrix table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 430px;
+      font-size: 0.84rem;
+      background: #fff;
+    }
+
+    .matrix th,
+    .matrix td {
+      border: 1px solid var(--line);
+      padding: 0.3rem 0.35rem;
+      text-align: right;
+    }
+
+    .matrix th {
+      background: #f6f9ff;
+      color: #263850;
+      font-weight: 600;
+    }
+
+    .matrix td.hl,
+    .matrix th.hl {
+      background: #eef5ff;
+      color: #1f3f73;
+      font-weight: 700;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(180px, 1fr));
+      gap: 0.5rem;
+      margin-top: 0.45rem;
+    }
+
+    .kpi {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.5rem;
+      background: #fff;
+    }
+
+    .kpi b {
+      display: block;
+      font-size: 1rem;
+      color: #0f2d57;
+      margin-top: 0.2rem;
+    }
+
+    .warn {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: var(--warn);
+      border-radius: 8px;
+      padding: 0.55rem;
+      font-size: 0.88rem;
+      margin-top: 0.55rem;
+      display: none;
+    }
+
+    .explain {
+      background: var(--accent-soft);
+      border: 1px solid #c9dcff;
+      border-radius: 8px;
+      padding: 0.55rem;
+      margin-top: 0.42rem;
+    }
+
+    .sum-ok {
+      color: #166534;
+      font-weight: 600;
+    }
+
+    .sum-bad {
+      color: #b42318;
+      font-weight: 600;
+    }
+
+    @media (max-width: 980px) {
+      .container { grid-template-columns: 1fr; }
+      .controls { position: static; }
+      .kpis { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="card controls">
+      <h1>Krigagem Ordinaria: foco no lambda</h1>
+      <p>
+        Ajuste os dados e veja como o multiplicador de Lagrange (lambda) aparece para forcar a restricao
+        <b>sum(w_i) = 1</b>.
+      </p>
+
+      <h3>Amostras (1D)</h3>
+      <table class="sample-table">
+        <thead>
+          <tr><th>Ponto</th><th>x</th><th>z</th></tr>
+        </thead>
+        <tbody>
+          <tr class="sample-row">
+            <td>P1</td>
+            <td><input class="x" type="number" step="0.1" value="0"></td>
+            <td><input class="z" type="number" step="0.1" value="12"></td>
+          </tr>
+          <tr class="sample-row">
+            <td>P2</td>
+            <td><input class="x" type="number" step="0.1" value="5"></td>
+            <td><input class="z" type="number" step="0.1" value="20"></td>
+          </tr>
+          <tr class="sample-row">
+            <td>P3</td>
+            <td><input class="x" type="number" step="0.1" value="11"></td>
+            <td><input class="z" type="number" step="0.1" value="16"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="grid-2" style="margin-top:0.45rem;">
+        <div>
+          <label for="x0">x alvo (x0)</label>
+          <input id="x0" type="number" step="0.1" value="7">
+        </div>
+        <div>
+          <label for="x0Range">Mover x0</label>
+          <input id="x0Range" type="range" min="-2" max="16" step="0.1" value="7">
+        </div>
+      </div>
+
+      <h3 style="margin-top:0.65rem;">Modelo de covariancia</h3>
+      <p style="margin-top:-0.2rem;">C(h) = sigma2 exp(-|h|/a)</p>
+      <div class="grid-2">
+        <div>
+          <label for="sigma2">sigma2 (patamar)</label>
+          <input id="sigma2" type="number" step="0.1" min="0.1" value="1">
+        </div>
+        <div>
+          <label for="range">a (alcance)</label>
+          <input id="range" type="number" step="0.1" min="0.1" value="6">
+        </div>
+      </div>
+
+      <button id="calcBtn">Calcular sistema de krigagem</button>
+      <div id="warn" class="warn"></div>
+    </aside>
+
+    <main>
+      <section class="card">
+        <h2>Passo 0 - Equacao da krigagem ordinaria</h2>
+        <div class="formula">
+[ C   1 ] [ w ] = [ c0 ]
+[ 1T   0 ] [ lambda ] = [ 1  ]
+
+C  : matriz de covariancias entre amostras
+c0 : covariancias entre cada amostra e o ponto alvo
+w  : pesos da krigagem
+lambda : multiplicador de Lagrange (impoe sum(w_i) = 1)
+        </div>
+        <p>
+          Sem lambda, voce resolveria apenas <b>Cw = c0</b> (similar a krigagem simples). Em geral, a soma
+          dos pesos nao bate 1. O lambda entra para corrigir isso e garantir nao-vies local.
+        </p>
+      </section>
+
+      <section class="card step">
+        <h2>Passo 1 - Montar C e c0</h2>
+        <p>Primeiro calculamos distancias e depois aplicamos C(h) = sigma2 exp(-|h|/a).</p>
+        <div id="matrixC" class="matrix"></div>
+        <div id="vectorc0" class="matrix"></div>
+      </section>
+
+      <section class="card step">
+        <h2>Passo 2 - Inserir a restricao com lambda</h2>
+        <p>
+          A ultima coluna e a ultima linha (com 1s) representam a restricao de soma dos pesos.
+          Esta e a parte que torna o problema "ordinario".
+        </p>
+        <div id="matrixA" class="matrix"></div>
+        <div id="vectorb" class="matrix"></div>
+      </section>
+
+      <section class="card step">
+        <h2>Passo 3 - Solucao dos pesos e do multiplicador</h2>
+        <div id="weightsTable" class="matrix"></div>
+        <div class="explain" id="lambdaExplain"></div>
+      </section>
+
+      <section class="card step">
+        <h2>Passo 4 - Estimativa final e comparacao didatica</h2>
+        <div class="kpis">
+          <div class="kpi">
+            Krigagem ordinaria (com lambda)
+            <b id="zOrd">-</b>
+          </div>
+          <div class="kpi">
+            Variancia de krigagem (OK)
+            <b id="varOrd">-</b>
+          </div>
+          <div class="kpi">
+            "Sem restricao" (Cw = c0)
+            <b id="zSimple">-</b>
+          </div>
+          <div class="kpi">
+            Soma dos pesos sem lambda
+            <b id="sumSimple">-</b>
+          </div>
+        </div>
+        <p>
+          Compare as duas colunas: a diferenca principal nao e "magica", e o fato de impor
+          explicitamente <b>sum(w_i) = 1</b> via lambda.
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const warnEl = document.getElementById("warn");
+    const x0Input = document.getElementById("x0");
+    const x0Range = document.getElementById("x0Range");
+
+    const EPS = 1e-12;
+
+    function covariance(h, sigma2, range) {
+      return sigma2 * Math.exp(-Math.abs(h) / range);
+    }
+
+    function dot(a, b) {
+      return a.reduce((acc, val, i) => acc + val * b[i], 0);
+    }
+
+    function fmt(v, digits = 6) {
+      if (!Number.isFinite(v)) return "NaN";
+      return v.toFixed(digits);
+    }
+
+    function parseSamples() {
+      const rows = Array.from(document.querySelectorAll(".sample-row"));
+      const samples = rows.map((row, idx) => {
+        const x = Number.parseFloat(row.querySelector(".x").value);
+        const z = Number.parseFloat(row.querySelector(".z").value);
+        if (!Number.isFinite(x) || !Number.isFinite(z)) {
+          throw new Error("Preencha todos os x e z com numeros validos.");
+        }
+        return { label: `P${idx + 1}`, x, z };
+      });
+
+      for (let i = 0; i < samples.length; i += 1) {
+        for (let j = i + 1; j < samples.length; j += 1) {
+          if (Math.abs(samples[i].x - samples[j].x) < 1e-9) {
+            throw new Error("Dois pontos com o mesmo x geram sistema quase singular.");
+          }
+        }
+      }
+      return samples;
+    }
+
+    function gaussianSolve(AInput, bInput) {
+      const n = bInput.length;
+      const A = AInput.map((row) => row.slice());
+      const b = bInput.slice();
+
+      for (let k = 0; k < n; k += 1) {
+        let pivot = k;
+        let maxAbs = Math.abs(A[k][k]);
+        for (let i = k + 1; i < n; i += 1) {
+          const candidate = Math.abs(A[i][k]);
+          if (candidate > maxAbs) {
+            maxAbs = candidate;
+            pivot = i;
+          }
+        }
+
+        if (maxAbs < EPS) {
+          throw new Error("Sistema singular ou mal condicionado para estes parametros.");
+        }
+
+        if (pivot !== k) {
+          [A[k], A[pivot]] = [A[pivot], A[k]];
+          [b[k], b[pivot]] = [b[pivot], b[k]];
+        }
+
+        for (let i = k + 1; i < n; i += 1) {
+          const factor = A[i][k] / A[k][k];
+          for (let j = k; j < n; j += 1) {
+            A[i][j] -= factor * A[k][j];
+          }
+          b[i] -= factor * b[k];
+        }
+      }
+
+      const x = new Array(n).fill(0);
+      for (let i = n - 1; i >= 0; i -= 1) {
+        let sum = b[i];
+        for (let j = i + 1; j < n; j += 1) {
+          sum -= A[i][j] * x[j];
+        }
+        x[i] = sum / A[i][i];
+      }
+      return x;
+    }
+
+    function renderMatrix(containerId, matrix, rowLabels, colLabels, highlightLast = false) {
+      const container = document.getElementById(containerId);
+      let html = "<table><thead><tr><th></th>";
+      colLabels.forEach((label, idx) => {
+        const hl = highlightLast && idx === colLabels.length - 1 ? " class='hl'" : "";
+        html += `<th${hl}>${label}</th>`;
+      });
+      html += "</tr></thead><tbody>";
+
+      matrix.forEach((row, i) => {
+        const rowHl = highlightLast && i === matrix.length - 1 ? " class='hl'" : "";
+        html += `<tr><th${rowHl}>${rowLabels[i]}</th>`;
+        row.forEach((v, j) => {
+          const cellHl =
+            highlightLast && (i === matrix.length - 1 || j === row.length - 1) ? " class='hl'" : "";
+          html += `<td${cellHl}>${fmt(v, 5)}</td>`;
+        });
+        html += "</tr>";
+      });
+
+      html += "</tbody></table>";
+      container.innerHTML = html;
+    }
+
+    function renderVector(containerId, vector, rowLabels, title) {
+      const container = document.getElementById(containerId);
+      let html = `<table><thead><tr><th>${title}</th></tr></thead><tbody>`;
+      vector.forEach((v, i) => {
+        html += `<tr><th>${rowLabels[i]} = ${fmt(v, 5)}</th></tr>`;
+      });
+      html += "</tbody></table>";
+      container.innerHTML = html;
+    }
+
+    function setWarning(message) {
+      warnEl.style.display = "block";
+      warnEl.textContent = message;
+    }
+
+    function clearWarning() {
+      warnEl.style.display = "none";
+      warnEl.textContent = "";
+    }
+
+    function compute() {
+      clearWarning();
+      try {
+        const samples = parseSamples();
+        const x0 = Number.parseFloat(x0Input.value);
+        const sigma2 = Number.parseFloat(document.getElementById("sigma2").value);
+        const range = Number.parseFloat(document.getElementById("range").value);
+
+        if (!Number.isFinite(x0) || !Number.isFinite(sigma2) || !Number.isFinite(range)) {
+          throw new Error("Verifique x0, sigma2 e alcance.");
+        }
+        if (sigma2 <= 0 || range <= 0) {
+          throw new Error("sigma2 e alcance devem ser maiores que zero.");
+        }
+
+        const n = samples.length;
+        const C = Array.from({ length: n }, (_, i) =>
+          Array.from({ length: n }, (_, j) => covariance(samples[i].x - samples[j].x, sigma2, range))
+        );
+
+        const c0 = samples.map((p) => covariance(p.x - x0, sigma2, range));
+
+        const A = Array.from({ length: n + 1 }, () => new Array(n + 1).fill(0));
+        for (let i = 0; i < n; i += 1) {
+          for (let j = 0; j < n; j += 1) {
+            A[i][j] = C[i][j];
+          }
+          A[i][n] = 1;
+          A[n][i] = 1;
+        }
+        A[n][n] = 0;
+
+        const b = c0.concat(1);
+
+        const labels = samples.map((p) => p.label);
+        renderMatrix("matrixC", C, labels, labels, false);
+        renderVector("vectorc0", c0, labels, "c0");
+        renderMatrix("matrixA", A, labels.concat("restricao"), labels.concat("lambda"), true);
+        renderVector("vectorb", b, labels.concat("restricao"), "b");
+
+        const solution = gaussianSolve(A, b);
+        const weights = solution.slice(0, n);
+        const lambda = solution[n];
+        const sumW = weights.reduce((acc, v) => acc + v, 0);
+
+        const wSimple = gaussianSolve(C, c0);
+        const sumSimple = wSimple.reduce((acc, v) => acc + v, 0);
+
+        const zOrd = dot(weights, samples.map((p) => p.z));
+        const zSimple = dot(wSimple, samples.map((p) => p.z));
+
+        const c00 = covariance(0, sigma2, range);
+        const varOrd = c00 - dot(weights, c0) - lambda;
+
+        let htmlW = "<table><thead><tr><th>Variavel</th><th>Valor</th></tr></thead><tbody>";
+        weights.forEach((w, i) => {
+          htmlW += `<tr><th>w${i + 1}</th><td>${fmt(w, 6)}</td></tr>`;
+        });
+        htmlW += `<tr><th>&lambda;</th><td>${fmt(lambda, 6)}</td></tr>`;
+        const cls = Math.abs(sumW - 1) < 1e-8 ? "sum-ok" : "sum-bad";
+        htmlW += `<tr><th>Soma dos pesos</th><td class="${cls}">${fmt(sumW, 10)}</td></tr>`;
+        htmlW += "</tbody></table>";
+        document.getElementById("weightsTable").innerHTML = htmlW;
+
+        let lambdaText = "";
+        const absLambda = Math.abs(lambda);
+        if (absLambda < 1e-5) {
+          lambdaText =
+            "Interpretacao: |lambda| muito pequeno. A solucao sem restricao ja estava quase obedecendo sum(w_i) = 1.";
+        } else if (absLambda < 0.03 * sigma2) {
+          lambdaText =
+            "Interpretacao: lambda moderado. Foi preciso um ajuste real nos pesos para garantir nao-vies local.";
+        } else {
+          lambdaText =
+            "Interpretacao: |lambda| alto. A restricao de soma dos pesos esta corrigindo bastante a solucao Cw = c0.";
+        }
+
+        document.getElementById("lambdaExplain").innerHTML =
+          `<b>Leitura didatica do multiplicador:</b><br>${lambdaText}<br>` +
+          `Valores deste exemplo: lambda = <b>${fmt(lambda, 6)}</b>, sum(w) = <b>${fmt(sumW, 8)}</b>.`;
+
+        document.getElementById("zOrd").textContent = fmt(zOrd, 6);
+        document.getElementById("varOrd").textContent = fmt(varOrd, 6);
+        document.getElementById("zSimple").textContent = fmt(zSimple, 6);
+        document.getElementById("sumSimple").textContent = fmt(sumSimple, 8);
+      } catch (err) {
+        setWarning(err.message);
+      }
+    }
+
+    document.getElementById("calcBtn").addEventListener("click", compute);
+    x0Range.addEventListener("input", () => {
+      x0Input.value = x0Range.value;
+      compute();
+    });
+    x0Input.addEventListener("input", () => {
+      x0Range.value = x0Input.value;
+      compute();
+    });
+
+    document.querySelectorAll("input[type='number']").forEach((input) => {
+      input.addEventListener("input", compute);
+    });
+
+    compute();
+  </script>
+</body>
+</html>
